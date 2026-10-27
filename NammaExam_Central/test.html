@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Test — NammaExam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#f0f0f0;--bg-white:#ffffff;--bg-cream:#fafafa;
+            --text:#1a1a2e;--text-mid:#4a4a6a;--text-light:#8a8aa0;
+            --primary:#1a6dd4;--primary-light:#e8f0fe;
+            --green:#00a651;--green-light:#e6f9ee;
+            --red:#d62828;--red-light:#fef2f2;
+            --purple:#7b2d8e;--purple-light:#f5e6fa;
+            --gray-pal:#e0e0e0;--gray-dark:#666;
+            --orange:#ea580c;--orange-light:#fff7ed;
+            --border:#d0d0d0;--border-light:#e8e8e8;
+            --shadow:0 2px 8px rgba(0,0,0,0.1);
+        }
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh}
+
+        /* ===== TOP BAR ===== */
+        .topbar{background:var(--bg-white);border-bottom:2px solid var(--primary);padding:0 12px;height:48px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:100}
+        .tb-left{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
+        .tb-exam{color:var(--primary);font-weight:700;font-size:14px}
+        .tb-paper{color:var(--text-mid);font-size:12px}
+        .tb-right{display:flex;align-items:center;gap:12px}
+        .timer{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:700;padding:4px 12px;border-radius:6px;background:var(--bg-cream);border:1px solid var(--border-light)}
+        .timer.warn{background:var(--orange-light);color:var(--orange);border-color:var(--orange)}
+        .timer.danger{background:var(--red-light);color:var(--red);border-color:var(--red);animation:blink 1s infinite}
+        @keyframes blink{50%{opacity:.7}}
+        .timer-icon{font-size:16px}
+        .lang-toggle{font-size:12px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--bg-cream);cursor:pointer;color:var(--text-mid)}
+        .lang-toggle.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+        /* ===== MAIN LAYOUT ===== */
+        .main{display:flex;margin-top:48px;height:calc(100vh - 48px)}
+
+        /* ===== QUESTION AREA ===== */
+        .q-area{flex:1;overflow-y:auto;padding:16px;background:var(--bg-white)}
+
+        /* SECTION TABS */
+        .sec-tabs{display:flex;gap:2px;margin-bottom:16px;border-bottom:2px solid var(--border-light);padding-bottom:0}
+        .sec-tab{padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text-light);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .1s}
+        .sec-tab:hover{color:var(--text-mid)}
+        .sec-tab.on{color:var(--primary);border-bottom-color:var(--primary)}
+
+        /* QUESTION */
+        .q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+        .q-number{font-size:13px;font-weight:700;color:var(--primary)}
+        .q-type{font-size:11px;color:var(--text-light);background:var(--bg-cream);padding:2px 8px;border-radius:4px}
+        .q-text{font-size:15px;margin-bottom:16px;line-height:1.7}
+        .q-text img{max-width:100%;margin:8px 0;border-radius:4px}
+        .q-image{width:100%;max-width:500px;margin:8px 0;border:1px solid var(--border-light);border-radius:4px}
+
+        /* OPTIONS */
+        .opts{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+        .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--border-light);border-radius:8px;cursor:pointer;transition:all .12s;background:var(--bg-white)}
+        .opt:hover{border-color:var(--primary);background:var(--primary-light)}
+        .opt.selected{border-color:var(--primary);background:var(--primary-light)}
+        .opt-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .12s}
+        .opt.selected .opt-radio{border-color:var(--primary);background:var(--primary)}
+        .opt.selected .opt-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+        .opt-label{font-weight:700;color:var(--primary);min-width:20px;font-size:14px}
+        .opt-text{font-size:14px;flex:1;line-height:1.5}
+        .opt-text img{max-width:100%;margin:4px 0}
+
+        /* ACTION BUTTONS */
+        .actions{display:flex;gap:8px;flex-wrap:wrap}
+        .act-btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--bg-white);color:var(--text-mid);transition:all .12s}
+        .act-btn:hover{border-color:var(--text-mid)}
+        .act-btn:active{transform:scale(.97)}
+        .act-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .act-btn.primary:hover{opacity:.9}
+
+        /* ===== PALETTE (Desktop) ===== */
+        .palette{width:260px;background:var(--bg-cream);border-left:1px solid var(--border);overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px}
+        .pal-title{font-size:12px;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:.5px}
+        .pal-legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--text-mid)}
+        .pal-legend-item{display:flex;align-items:center;gap:4px}
+        .pal-dot{width:12px;height:12px;border-radius:3px}
+        .pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+        .pal-btn{width:100%;aspect-ratio:1;border-radius:6px;border:1px solid var(--border-light);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;background:var(--bg-white);color:var(--text-mid)}
+        .pal-btn:hover{border-color:var(--primary)}
+        .pal-btn.current{border:2px solid var(--primary);font-weight:700;color:var(--primary)}
+        .pal-btn.answered{background:var(--green);color:#fff;border-color:var(--green)}
+        .pal-btn.marked{background:var(--purple);color:#fff;border-color:var(--purple)}
+        .pal-btn.marked-ans{background:var(--purple);color:#fff;border-color:var(--purple);position:relative}
+        .pal-btn.marked-ans::after{content:'';position:absolute;bottom:2px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+        .pal-btn.not-answered{background:var(--red);color:#fff;border-color:var(--red)}
+        .pal-btn.not-visited{background:var(--bg-white);color:var(--text-mid)}
+        .pal-submit{margin-top:auto}
+        .submit-btn{width:100%;padding:10px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--red);color:#fff;transition:all .12s}
+        .submit-btn:hover{opacity:.9}
+        .submit-btn:active{transform:scale(.97)}
+
+        /* ===== MOBILE PALETTE TOGGLE ===== */
+        .pal-toggle{display:none;position:fixed;bottom:12px;right:12px;z-index:90;width:48px;height:48px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:14px;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+        .pal-toggle .count{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+        /* ===== MOBILE PALETTE OVERLAY ===== */
+        .pal-overlay{display:none;position:fixed;bottom:0;left:0;right:0;z-index:95;background:var(--bg-cream);border-top:2px solid var(--primary);border-radius:16px 16px 0 0;padding:16px;max-height:60vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s ease}
+        .pal-overlay.open{display:block;transform:translateY(0)}
+        .pal-overlay-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+        .pal-overlay-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-mid)}
+
+        /* ===== SUBMIT CONFIRM ===== */
+        .modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}
+        .modal-bg.open{display:flex}
+        .modal{background:var(--bg-white);border-radius:12px;padding:24px;max-width:400px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.2)}
+        .modal h2{font-size:18px;font-weight:700;margin-bottom:8px}
+        .modal p{font-size:13px;color:var(--text-mid);margin-bottom:16px}
+        .modal-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+        .modal-stat{background:var(--bg-cream);padding:8px;border-radius:6px;text-align:center}
+        .modal-stat .val{font-size:18px;font-weight:700}
+        .modal-stat .lbl{font-size:11px;color:var(--text-light)}
+        .modal-btns{display:flex;gap:8px}
+        .modal-btns .act-btn{flex:1;text-align:center}
+
+        /* ===== LOADING ===== */
+        .loading{display:flex;align-items:center;justify-content:center;height:calc(100vh - 48px);flex-direction:column;gap:12px}
+        .ld-sp{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading p{font-size:13px;color:var(--text-mid)}
+
+        /* ===== RESUME PROMPT ===== */
+        .resume-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}
+        .resume-bg.open{display:flex}
+        .resume-card{background:var(--bg-white);border-radius:12px;padding:24px;max-width:360px;width:100%;text-align:center}
+        .resume-card h2{font-size:18px;font-weight:700;margin-bottom:8px}
+        .resume-card p{font-size:13px;color:var(--text-mid);margin-bottom:20px}
+        .resume-btns{display:flex;gap:8px}
+        .resume-btns .act-btn{flex:1;text-align:center}
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:768px){
+            .palette{display:none}
+            .pal-toggle{display:flex;align-items:center;justify-content:center}
+            .q-area{padding:12px}
+            .topbar{padding:0 8px;height:44px}
+            .main{margin-top:44px;height:calc(100vh - 44px)}
+            .actions{flex-wrap:wrap}
+            .act-btn{flex:1;text-align:center;min-width:0;padding:8px 10px;font-size:12px}
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="tb-left">
+        <span class="tb-exam" id="tbExam">SSC CGL 2023</span>
+        <span class="tb-paper" id="tbPaper">Tier 1</span>
+    </div>
+    <div class="tb-right">
+        <button class="lang-toggle" id="qLangBtn" onclick="toggleQLang()">हिं</button>
+        <div class="timer" id="timer">
+            <span class="timer-icon">⏱️</span>
+            <span id="timerText">60:00</span>
+        </div>
+    </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loadingState">
+    <div class="ld-sp"></div>
+    <p>Loading test...</p>
+</div>
+
+<!-- MAIN (hidden until loaded) -->
+<div class="main" id="mainArea" style="display:none">
+
+    <!-- QUESTION AREA -->
+    <div class="q-area" id="qArea">
+        <div class="sec-tabs" id="secTabs"></div>
+        <div class="q-header">
+            <span class="q-number" id="qNumber">Question 1</span>
+            <span class="q-type" id="qType">Single Correct</span>
+        </div>
+        <div class="q-text" id="qText"></div>
+        <div class="opts" id="optsArea"></div>
+        <div class="actions">
+            <button class="act-btn" onclick="clearResponse()">Clear Response</button>
+            <button class="act-btn" onclick="markForReview()">Mark for Review</button>
+            <button class="act-btn primary" onclick="saveAndNext()">Save & Next</button>
+        </div>
+    </div>
+
+    <!-- PALETTE (Desktop) -->
+    <div class="palette" id="paletteDesktop">
+        <div class="pal-title">Question Palette</div>
+        <div class="pal-legend">
+            <div class="pal-legend-item"><div class="pal-dot" style="background:var(--green)"></div>Answered</div>
+            <div class="pal-legend-item"><div class="pal-dot" style="background:var(--red)"></div>Not Answered</div>
+            <div class="pal-legend-item"><div class="pal-dot" style="background:var(--purple)"></div>Marked</div>
+            <div class="pal-legend-item"><div class="pal-dot" style="background:var(--bg-white);border:1px solid var(--border)"></div>Not Visited</div>
+        </div>
+        <div class="pal-grid" id="palGridDesktop"></div>
+        <div class="pal-submit">
+            <button class="submit-btn" onclick="showSubmitModal()">Submit Test</button>
+        </div>
+    </div>
+</div>
+
+<!-- MOBILE PALETTE TOGGLE -->
+<button class="pal-toggle" id="palToggle" onclick="toggleMobilePal()">
+    📋
+    <span class="count" id="palCount">1</span>
+</button>
+
+<!-- MOBILE PALETTE OVERLAY -->
+<div class="pal-overlay" id="palOverlay">
+    <div class="pal-overlay-header">
+        <div class="pal-title">Question Palette</div>
+        <button class="pal-overlay-close" onclick="toggleMobilePal()">✕</button>
+    </div>
+    <div class="pal-legend" style="margin-bottom:10px">
+        <div class="pal-legend-item"><div class="pal-dot" style="background:var(--green)"></div>Answered</div>
+        <div class="pal-legend-item"><div class="pal-dot" style="background:var(--red)"></div>Skipped</div>
+        <div class="pal-legend-item"><div class="pal-dot" style="background:var(--purple)"></div>Marked</div>
+        <div class="pal-legend-item"><div class="pal-dot" style="background:var(--bg-white);border:1px solid var(--border)"></div>Not Visited</div>
+    </div>
+    <div class="pal-grid" id="palGridMobile"></div>
+    <div style="margin-top:12px">
+        <button class="submit-btn" onclick="showSubmitModal();toggleMobilePal()">Submit Test</button>
+    </div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div class="modal-bg" id="submitModal">
+    <div class="modal">
+        <h2>Submit Test?</h2>
+        <p>Are you sure you want to submit? You cannot change answers after submission.</p>
+        <div class="modal-stats" id="modalStats"></div>
+        <div class="modal-btns">
+            <button class="act-btn" onclick="closeSubmitModal()">Cancel</button>
+            <button class="act-btn primary" onclick="submitTest()" id="submitBtn">Submit</button>
+        </div>
+    </div>
+</div>
+
+<!-- RESUME PROMPT -->
+<div class="resume-bg" id="resumePrompt">
+    <div class="resume-card">
+        <h2>Resume Test?</h2>
+        <p id="resumeInfo">You have an unfinished test.</p>
+        <div class="resume-btns">
+            <button class="act-btn" onclick="abandonTest()">Abandon</button>
+            <button class="act-btn primary" onclick="resumeTest()">Resume</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+var API='https://script.google.com/macros/s/AKfycbxn_syphrTs7NP4QaVpOznYyds4ekTQlCjXxkX3uakfJHJmPKSiq83DVztoVeWpp8TVyg/exec';
+var IMG_BASE='https://images.nammaexam.com/images/';
+var token=localStorage.getItem('token');
+if(!token)location.href='login.html';
+
+// ===== URL PARAMS =====
+var params=new URLSearchParams(location.search);
+var examId=params.get('exam')||'ssc-cgl';
+var paperType=params.get('type')||'pyq';
+var paperRef=params.get('ref')||'2023';
+var paperId=examId+'-'+paperType+'-'+paperRef;
+
+// ===== STATE =====
+var questions=[];
+var currentQ=0;
+var answers={};       // {qIndex: 'a'|'b'|'c'|'d'}
+var marked={};        // {qIndex: true}
+var visited={};       // {qIndex: true}
+var qLang='en';       // question language
+var timerSeconds=0;
+var timerInterval=null;
+var testSubmitted=false;
+var sections=[];
+
+// ===== CHECK RESUME =====
+var savedState=JSON.parse(localStorage.getItem('testState')||'null');
+if(savedState&&savedState.paperId===paperId&&!savedState.submitted){
+    document.getElementById('loadingState').style.display='none';
+    var info=document.getElementById('resumeInfo');
+    var answered=Object.keys(savedState.answers).length;
+    var remaining=savedState.remainingSeconds;
+    var rm=Math.floor(remaining/60);
+    var rs=remaining%60;
+    info.textContent=answered+' questions answered, '+rm+':'+String(rs).padStart(2,'0')+' remaining.';
+    document.getElementById('resumePrompt').classList.add('open');
+}
+
+function resumeTest(){
+    document.getElementById('resumePrompt').classList.remove('open');
+    document.getElementById('loadingState').style.display='flex';
+    loadQuestions();
+}
+
+function abandonTest(){
+    localStorage.removeItem('testState');
+    location.href='dashboard.html';
+}
+
+// ===== LOAD QUESTIONS =====
+function loadQuestions(){
+    fetch(API+'?action=getQuestions&token='+encodeURIComponent(token)+'&examId='+examId+'&paperId='+paperId)
+    .then(function(r){return r.json()})
+    .then(function(data){
+        if(data.error&&data.code===401){location.href='login.html';return}
+        questions=data.questions||[];
+        timerSeconds=(data.duration||60)*60;
+
+        if(questions.length===0){
+            alert('No questions found for this paper.');
+            location.href='dashboard.html';
+            return;
+        }
+
+        // Restore saved state
+        if(savedState&&savedState.paperId===paperId){
+            answers=savedState.answers||{};
+            marked=savedState.marked||{};
+            visited=savedState.visited||{};
+            currentQ=savedState.currentQ||0;
+            timerSeconds=savedState.remainingSeconds||timerSeconds;
+        }
+
+        // Build sections
+        buildSections();
+
+        // Render
+        document.getElementById('loadingState').style.display='none';
+        document.getElementById('mainArea').style.display='flex';
+        renderQuestion();
+        renderPalette();
+        startTimer();
+    })
+    .catch(function(){
+        alert('Failed to load questions. Check your connection.');
+        location.href='dashboard.html';
+    });
+}
+
+// ===== SECTIONS =====
+function buildSections(){
+    var secMap={};
+    questions.forEach(function(q,i){
+        var sec=q.section||'General';
+        if(!secMap[sec])secMap[sec]=[];
+        secMap[sec].push(i);
+    });
+    sections=[];
+    var keys=Object.keys(secMap);
+    keys.forEach(function(k){sections.push({name:k,questions:secMap[k]})});
+}
+
+function renderSecTabs(){
+    var html='';
+    sections.forEach(function(sec,i){
+        var cls=sec.questions.indexOf(currentQ)!==-1?'sec-tab on':'sec-tab';
+        html+='<button class="'+cls+'" onclick="goToSection('+i+')">'+sec.name+'</button>';
+    });
+    document.getElementById('secTabs').innerHTML=html;
+}
+
+function goToSection(i){
+    currentQ=sections[i].questions[0];
+    renderQuestion();
+    renderPalette();
+}
+
+// ===== RENDER QUESTION =====
+function renderQuestion(){
+    if(currentQ<0||currentQ>=questions.length)return;
+    visited[currentQ]=true;
+
+    var q=questions[currentQ];
+    var lang=qLang;
+
+    // Section tabs
+    renderSecTabs();
+
+    // Question number
+    document.getElementById('qNumber').textContent='Question '+(currentQ+1)+' / '+questions.length;
+
+    // Question text
+    var qText=q['question_en']||q.question_text||'';
+    if(lang==='hi'){
+        var hiText=q['question_hi']||'';
+        if(hiText)qText=hiText;
+    }
+    document.getElementById('qText').innerHTML=qText;
+
+    // Image
+    if(q.image_type&&q.image_type!=='none'&&q.image_url){
+        var imgUrl=IMG_BASE+q.image_url;
+        if(q.image_type==='question'){
+            document.getElementById('qText').innerHTML+='<img src="'+imgUrl+'" class="q-image" alt="Question image">';
+        } else if(q.image_type==='full'){
+            document.getElementById('qText').innerHTML='<img src="'+imgUrl+'" class="q-image" alt="Question image">';
+        }
+    }
+
+    // Options
+    var optLabels=['a','b','c','d'];
+    var optFields=['opt_a_en','opt_b_en','opt_c_en','opt_d_en'];
+    var optFieldsHi=['opt_a_hi','opt_b_hi','opt_c_hi','opt_d_hi'];
+    var optsHtml='';
+    for(var i=0;i<4;i++){
+        var optText=q[optFields[i]]||'';
+        if(lang==='hi'){
+            var hiOpt=q[optFieldsHi[i]]||'';
+            if(hiOpt)optText=hiOpt;
+        }
+        if(!optText&&q.image_type==='full')continue;
+
+        var selected=answers[currentQ]===optLabels[i];
+        var selCls=selected?' selected':'';
+
+        optsHtml+=
+            '<div class="opt'+selCls+'" onclick="selectOption('+currentQ+',\''+optLabels[i]+'\')">'+
+                '<div class="opt-radio"></div>'+
+                '<span class="opt-label">'+optLabels[i].toUpperCase()+'</span>'+
+                '<span class="opt-text">'+optText+'</span>'+
+            '</div>';
+    }
+    document.getElementById('optsArea').innerHTML=optsHtml;
+
+    // Save state
+    autoSave();
+    renderPalette();
+}
+
+// ===== SELECT OPTION =====
+function selectOption(qIdx,opt){
+    if(testSubmitted)return;
+    if(answers[qIdx]===opt){
+        delete answers[qIdx];
+    } else {
+        answers[qIdx]=opt;
+    }
+    renderQuestion();
+}
+
+// ===== ACTIONS =====
+function clearResponse(){
+    delete answers[currentQ];
+    renderQuestion();
+}
+
+function markForReview(){
+    marked[currentQ]=!marked[currentQ];
+    if(!marked[currentQ])delete marked[currentQ];
+    saveAndNext();
+}
+
+function saveAndNext(){
+    visited[currentQ]=true;
+    // Find next unvisited, or next question
+    var next=-1;
+    for(var i=currentQ+1;i<questions.length;i++){
+        if(!visited[i]){next=i;break}
+    }
+    if(next===-1){
+        for(var i=0;i<currentQ;i++){
+            if(!visited[i]){next=i;break}
+        }
+    }
+    if(next===-1)next=Math.min(currentQ+1,questions.length-1);
+    currentQ=next;
+    renderQuestion();
+}
+
+// ===== GO TO QUESTION =====
+function goToQ(idx){
+    currentQ=idx;
+    renderQuestion();
+    // Close mobile palette
+    document.getElementById('palOverlay').classList.remove('open');
+}
+
+// ===== PALETTE =====
+function renderPalette(){
+    var answeredCount=Object.keys(answers).length;
+    document.getElementById('palCount').textContent=answeredCount;
+
+    var html='';
+    questions.forEach(function(q,i){
+        var cls='pal-btn';
+        if(i===currentQ)cls+=' current';
+        if(marked[i]&&answers[i])cls+=' marked-ans';
+        else if(marked[i])cls+=' marked';
+        else if(answers[i])cls+=' answered';
+        else if(visited[i])cls+=' not-answered';
+        else cls+=' not-visited';
+
+        html+='<button class="'+cls+'" onclick="goToQ('+i+')">'+(i+1)+'</button>';
+    });
+
+    document.getElementById('palGridDesktop').innerHTML=html;
+    document.getElementById('palGridMobile').innerHTML=html;
+}
+
+function toggleMobilePal(){
+    var overlay=document.getElementById('palOverlay');
+    overlay.classList.toggle('open');
+}
+
+// ===== QUESTION LANGUAGE =====
+function toggleQLang(){
+    qLang=qLang==='en'?'hi':'en';
+    var btn=document.getElementById('qLangBtn');
+    btn.textContent=qLang==='hi'?'EN':'हिं';
+    btn.classList.toggle('on',qLang==='hi');
+    renderQuestion();
+}
+
+// ===== TIMER =====
+function startTimer(){
+    updateTimerDisplay();
+    timerInterval=setInterval(function(){
+        if(testSubmitted)return;
+        timerSeconds--;
+        updateTimerDisplay();
+        if(timerSeconds<=0){
+            clearInterval(timerInterval);
+            submitTest();
+        }
+    },1000);
+}
+
+function updateTimerDisplay(){
+    var h=Math.floor(timerSeconds/3600);
+    var m=Math.floor((timerSeconds%3600)/60);
+    var s=timerSeconds%60;
+    var text='';
+    if(h>0)text=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    else text=m+':'+String(s).padStart(2,'0');
+    document.getElementById('timerText').textContent=text;
+
+    var timerEl=document.getElementById('timer');
+    timerEl.classList.remove('warn','danger');
+    var totalMin=timerSeconds/60;
+    if(totalMin<=5)timerEl.classList.add('danger');
+    else if(totalMin<=10)timerEl.classList.add('warn');
+}
+
+// ===== AUTO-SAVE =====
+function autoSave(){
+    var state={
+        paperId:paperId,
+        currentQ:currentQ,
+        answers:answers,
+        marked:marked,
+        visited:visited,
+        remainingSeconds:timerSeconds,
+        submitted:false,
+        timestamp:Date.now()
+    };
+    localStorage.setItem('testState',JSON.stringify(state));
+}
+
+// Auto-save every 10 seconds
+setInterval(function(){if(!testSubmitted)autoSave()},10000);
+
+// ===== SUBMIT MODAL =====
+function showSubmitModal(){
+    var answered=Object.keys(answers).length;
+    var markedCount=Object.keys(marked).length;
+    var notAnswered=questions.length-answered;
+    var notVisited=questions.length-Object.keys(visited).length;
+
+    document.getElementById('modalStats').innerHTML=
+        '<div class="modal-stat"><div class="val" style="color:var(--green)">'+answered+'</div><div class="lbl">Answered</div></div>'+
+        '<div class="modal-stat"><div class="val" style="color:var(--red)">'+notAnswered+'</div><div class="lbl">Not Answered</div></div>'+
+        '<div class="modal-stat"><div class="val" style="color:var(--purple)">'+markedCount+'</div><div class="lbl">Marked</div></div>'+
+        '<div class="modal-stat"><div class="val" style="color:var(--text-light)">'+notVisited+'</div><div class="lbl">Not Visited</div></div>';
+
+    document.getElementById('submitModal').classList.add('open');
+}
+
+function closeSubmitModal(){
+    document.getElementById('submitModal').classList.remove('open');
+}
+
+// ===== SUBMIT TEST =====
+function submitTest(){
+    testSubmitted=true;
+    clearInterval(timerInterval);
+    closeSubmitModal();
+
+    var btn=document.getElementById('submitBtn');
+    btn.textContent='Submitting...';
+    btn.disabled=true;
+
+    // Build answer data
+    var answerList=[];
+    questions.forEach(function(q,i){
+        answerList.push({
+            qId:q.id||q.q_id||i,
+            qIndex:i,
+            yourAnswer:answers[i]||null,
+            correctAnswer:q.correct,
+            section:q.section,
+            topic:q.topic
+        });
+    });
+
+    var totalTime=(questions[0]&&questions[0].duration?questions[0].duration:60)*60;
+    var timeTaken=totalTime-timerSeconds;
+    var timeTakenStr=Math.floor(timeTaken/60)+':'+String(timeTaken%60).padStart(2,'0');
+
+    var data={
+        action:'submitResult',
+        token:token,
+        examId:examId,
+        paperId:paperId,
+        answers:answerList,
+        totalQuestions:questions.length,
+        timeTaken:timeTakenStr
+    };
+
+    // Save locally in case network fails
+    localStorage.setItem('pendingSubmission',JSON.stringify(data));
+
+    fetch(API,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify(data)
+    })
+    .then(function(r){return r.json()})
+    .then(function(res){
+        localStorage.removeItem('pendingSubmission');
+        localStorage.removeItem('testState');
+        if(res.success){
+            location.href='result.html?id='+res.resultId;
+        } else {
+            alert('Error: '+(res.error||'Submission failed'));
+            btn.textContent='Submit';
+            btn.disabled=false;
+            testSubmitted=false;
+        }
+    })
+    .catch(function(){
+        alert('Network error. Your answers are saved. Go to dashboard and retry.');
+        localStorage.setItem('testState',JSON.stringify({
+            paperId:paperId,currentQ:currentQ,answers:answers,
+            marked:marked,visited:visited,remainingSeconds:timerSeconds,submitted:false
+        }));
+        location.href='dashboard.html';
+    });
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown',function(e){
+    if(testSubmitted)return;
+    if(document.getElementById('submitModal').classList.contains('open'))return;
+
+    switch(e.key){
+        case '1': case 'a': selectOption(currentQ,'a');break;
+        case '2': case 'b': selectOption(currentQ,'b');break;
+        case '3': case 'c': selectOption(currentQ,'c');break;
+        case '4': case 'd': selectOption(currentQ,'d');break;
+        case 'ArrowRight': saveAndNext();break;
+        case 'ArrowLeft':
+            if(currentQ>0){currentQ--;renderQuestion()}
+            break;
+    }
+});
+
+// ===== INIT (if no resume needed) =====
+if(!savedState||savedState.paperId!==paperId||savedState.submitted){
+    loadQuestions();
+}
+</script>
+</body>
+</html>

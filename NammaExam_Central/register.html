@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — NammaExam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#ffffff;--bg-alt:#f8f9fc;--bg-card:#ffffff;
+            --text:#1a1a2e;--text-mid:#4a4a6a;--text-light:#8a8aa0;
+            --primary:#d62828;--primary-light:#fef2f2;--primary-hover:#b91c1c;
+            --accent:#1d4ed8;--accent-light:#eff6ff;
+            --green:#16a34a;--green-light:#f0fdf4;
+            --orange:#ea580c;--orange-light:#fff7ed;
+            --border:#e5e7eb;--border-light:#f3f4f6;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+            --radius:8px;--radius-lg:12px;
+        }
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-alt);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+        a{text-decoration:none;color:inherit}
+
+        /* NAV */
+        .nav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between}
+        .nav-brand{font-weight:800;font-size:18px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer}
+        .nav-brand em{font-style:normal;color:var(--primary)}
+        .nav-right{display:flex;align-items:center;gap:8px}
+        .lang-sw{display:flex;background:var(--bg-alt);border-radius:6px;padding:2px;border:1px solid var(--border)}
+        .lang-sw button{border:none;background:transparent;padding:4px 10px;font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;color:var(--text-light);transition:all .15s}
+        .lang-sw button.on{background:var(--primary);color:#fff}
+
+        /* MAIN */
+        .main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+        .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 24px;width:100%;max-width:400px;box-shadow:var(--shadow-sm)}
+
+        /* FORM HEADER */
+        .card-icon{width:44px;height:44px;border-radius:10px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+        .card h1{font-size:22px;font-weight:700;margin-bottom:4px}
+        .card-sub{font-size:14px;color:var(--text-light);margin-bottom:24px}
+
+        /* FORM */
+        .fg{margin-bottom:16px}
+        .fl{display:block;font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:5px}
+        .fi{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;color:var(--text);background:var(--bg);transition:all .15s;outline:none}
+        .fi:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(214,40,40,0.08)}
+        .fi::placeholder{color:var(--text-light)}
+        .fi.err{border-color:var(--primary);background:var(--primary-light)}
+        .fh{display:flex;justify-content:space-between;align-items:center}
+        .ferr{font-size:12px;color:var(--primary);margin-top:3px;display:none}
+        .ferr.show{display:block}
+        .foptional{font-size:11px;color:var(--text-light);font-weight:400}
+
+        /* PASSWORD */
+        .pw-wrap{position:relative}
+        .pw-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-light);font-size:14px;padding:4px}
+        .pw-toggle:hover{color:var(--text-mid)}
+
+        /* CHECKBOX */
+        .cb-wrap{display:flex;align-items:flex-start;gap:8px;margin-bottom:20px}
+        .cb-wrap input{width:16px;height:16px;margin-top:2px;accent-color:var(--primary);cursor:pointer;flex-shrink:0}
+        .cb-wrap label{font-size:12px;color:var(--text-mid);cursor:pointer}
+        .cb-wrap label a{color:var(--primary);font-weight:600}
+        .cb-wrap label a:hover{text-decoration:underline}
+
+        /* BUTTON */
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;width:100%}
+        .btn:active{transform:scale(.97)}
+        .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+        .btn-p{background:var(--primary);color:#fff}
+        .btn-p:hover:not(:disabled){background:var(--primary-hover)}
+
+        /* SPINNER */
+        .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* DIVIDER */
+        .divider{text-align:center;margin:20px 0;font-size:12px;color:var(--text-light);position:relative}
+        .divider::before,.divider::after{content:'';position:absolute;top:50%;width:calc(50% - 40px);height:1px;background:var(--border)}
+        .divider::before{left:0}
+        .divider::after{right:0}
+
+        /* LINK ROW */
+        .link-row{text-align:center;font-size:13px;color:var(--text-mid);margin-top:20px}
+        .link-row a{color:var(--primary);font-weight:600}
+        .link-row a:hover{text-decoration:underline}
+
+        /* TOAST */
+        .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:var(--shadow-md);display:none;max-width:360px;text-align:center}
+        .toast.err{background:var(--primary);color:#fff}
+        .toast.ok{background:var(--green);color:#fff}
+        .toast.show{display:block}
+
+        /* POWERED BY */
+        .pwb{text-align:center;padding:16px;font-size:12px;color:var(--text-light)}
+        .pwb a{color:var(--primary);font-weight:700}
+
+        @media(max-width:400px){
+            .card{padding:24px 16px}
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-brand" onclick="location.href='index.html'">Namma<em>Exam</em></div>
+    <div class="nav-right">
+        <div class="lang-sw">
+            <button class="on" id="len" onclick="setL('en')">EN</button>
+            <button id="lhi" onclick="setL('hi')">हिं</button>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+    <div class="card">
+        <div class="card-icon">📝</div>
+        <h1 data-t="title">Create Account</h1>
+        <p class="card-sub" data-t="subtitle">Start practicing for free</p>
+
+        <form id="regForm" onsubmit="return handleRegister(event)">
+            <!-- NAME -->
+            <div class="fg">
+                <label class="fl" data-t="l_name">Full Name</label>
+                <input type="text" class="fi" id="name" placeholder="Rahul Sharma" autocomplete="name" required>
+                <div class="ferr" id="nameErr"></div>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="fg">
+                <label class="fl" data-t="l_email">Email Address</label>
+                <input type="email" class="fi" id="email" placeholder="rahul@gmail.com" autocomplete="email" required>
+                <div class="ferr" id="emailErr"></div>
+            </div>
+
+            <!-- PHONE -->
+            <div class="fg">
+                <label class="fl fh">
+                    <span data-t="l_phone">Phone Number</span>
+                    <span class="foptional" data-t="optional">(optional)</span>
+                </label>
+                <input type="tel" class="fi" id="phone" placeholder="9876543210" autocomplete="tel" maxlength="10">
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="fg">
+                <label class="fl" data-t="l_pass">Password</label>
+                <div class="pw-wrap">
+                    <input type="password" class="fi" id="password" placeholder="Minimum 6 characters" autocomplete="new-password" required minlength="6">
+                    <button type="button" class="pw-toggle" onclick="togglePw('password',this)">👁️</button>
+                </div>
+                <div class="ferr" id="passErr"></div>
+            </div>
+
+            <!-- TERMS -->
+            <div class="cb-wrap">
+                <input type="checkbox" id="terms" required>
+                <label for="terms" data-t="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+            </div>
+
+            <!-- SUBMIT -->
+            <button type="submit" class="btn btn-p" id="submitBtn" data-t="btn_create">
+                Create Account
+            </button>
+        </form>
+
+        <div class="link-row">
+            <span data-t="has_account">Already have an account?</span>
+            <a href="login.html" data-t="login_link">Login</a>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- POWERED BY -->
+<div class="pwb">
+    Namma Exam — Powered by <a href="https://nammaexam.online/" target="_blank" rel="noopener">Clinisync Technology</a>
+</div>
+
+<script>
+// ===== API URL =====
+var API = 'https://script.google.com/macros/s/AKfycbxn_syphrTs7NP4QaVpOznYyds4ekTQlCjXxkX3uakfJHJmPKSiq83DVztoVeWpp8TVyg/exec';
+
+// ===== LANGUAGE =====
+var T={en:{title:"Create Account",subtitle:"Start practicing for free",l_name:"Full Name",l_email:"Email Address",l_phone:"Phone Number",optional:"(optional)",l_pass:"Password",terms:'I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>',btn_create:"Create Account",has_account:"Already have an account?",login_link:"Login",err_name:"Please enter your name",err_email:"Please enter a valid email",err_pass:"Password must be at least 6 characters",err_terms:"Please accept the terms",err_exists:"This email is already registered",err_general:"Something went wrong. Please try again.",err_network:"Network error. Check your connection."},hi:{title:"अकाउंट बनाएं",subtitle:"मुफ्त अभ्यास शुरू करें",l_name:"पूरा नाम",l_email:"ईमेल पता",l_phone:"फोन नंबर",optional:"(वैकल्पिक)",l_pass:"पासवर्ड",terms:'मैं <a href="#">सेवा की शर्तें</a> और <a href="#">गोपनीयता नीति</a> से सहमत हूं',btn_create:"अकाउंट बनाएं",has_account:"पहले से अकाउंट है?",login_link:"लॉगिन करें",err_name:"कृपया अपना नाम दर्ज करें",err_email:"कृपया सही ईमेल दर्ज करें",err_pass:"पासवर्ड कम से कम 6 अक्षर का होना चाहिए",err_terms:"कृपया शर्तें स्वीकार करें",err_exists:"यह ईमेल पहले से रजिस्टर है",err_general:"कुछ गलत हुआ। फिर कोशिश करें।",err_network:"नेटवर्क त्रुटि। कनेक्शन जांचें।"}};
+function getL(){return localStorage.getItem('nl')||'en'}
+function setL(l){localStorage.setItem('nl',l);applyL(l);document.getElementById('len').classList.toggle('on',l==='en');document.getElementById('lhi').classList.toggle('on',l==='hi')}
+function applyL(l){var t=T[l]||T.en;document.querySelectorAll('[data-t]').forEach(function(e){var k=e.getAttribute('data-t');if(t[k])e.innerHTML=t[k]})}
+applyL(getL());document.getElementById('len').classList.toggle('on',getL()==='en');document.getElementById('lhi').classList.toggle('on',getL()==='hi');
+
+// ===== TOGGLE PASSWORD =====
+function togglePw(id,btn){
+    var inp=document.getElementById(id);
+    if(inp.type==='password'){inp.type='text';btn.textContent='🙈'}
+    else{inp.type='password';btn.textContent='👁️'}
+}
+
+// ===== TOAST =====
+function showToast(msg,type){
+    var t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='toast '+type+' show';
+    setTimeout(function(){t.classList.remove('show')},4000);
+}
+
+// ===== VALIDATE =====
+function validate(){
+    var lang=getL(),t=T[lang],ok=true;
+    // Clear errors
+    document.querySelectorAll('.ferr').forEach(function(e){e.textContent='';e.classList.remove('show')});
+    document.querySelectorAll('.fi').forEach(function(e){e.classList.remove('err')});
+
+    var name=document.getElementById('name').value.trim();
+    var email=document.getElementById('email').value.trim();
+    var pass=document.getElementById('password').value;
+    var terms=document.getElementById('terms').checked;
+
+    if(!name){
+        document.getElementById('nameErr').textContent=t.err_name;
+        document.getElementById('nameErr').classList.add('show');
+        document.getElementById('name').classList.add('err');
+        ok=false;
+    }
+    if(!email||!email.includes('@')||!email.includes('.')){
+        document.getElementById('emailErr').textContent=t.err_email;
+        document.getElementById('emailErr').classList.add('show');
+        document.getElementById('email').classList.add('err');
+        ok=false;
+    }
+    if(pass.length<6){
+        document.getElementById('passErr').textContent=t.err_pass;
+        document.getElementById('passErr').classList.add('show');
+        document.getElementById('password').classList.add('err');
+        ok=false;
+    }
+    if(!terms){
+        showToast(t.err_terms,'err');
+        ok=false;
+    }
+    return ok;
+}
+
+// ===== REGISTER =====
+function handleRegister(e){
+    e.preventDefault();
+    if(!validate()) return false;
+
+    var btn=document.getElementById('submitBtn');
+    var lang=getL(),t=T[lang];
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span> '+t.btn_create;
+
+    var data={
+        action:'register',
+        name:document.getElementById('name').value.trim(),
+        email:document.getElementById('email').value.trim().toLowerCase(),
+        phone:document.getElementById('phone').value.trim(),
+        password:document.getElementById('password').value
+    };
+
+    fetch(API,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify(data)
+    })
+    .then(function(r){return r.json()})
+    .then(function(res){
+        btn.disabled=false;
+        btn.textContent=t.btn_create;
+        if(res.success){
+            localStorage.setItem('token',res.token);
+            localStorage.setItem('user',JSON.stringify(res.user));
+            showToast(lang==='hi'?'अकाउंट बन गया!':'Account created!','ok');
+            setTimeout(function(){location.href='dashboard.html'},1500);
+        } else {
+            if(res.error&&res.error.indexOf('already')!==-1){
+                showToast(t.err_exists,'err');
+                document.getElementById('email').classList.add('err');
+            } else {
+                showToast(res.error||t.err_general,'err');
+            }
+        }
+    })
+    .catch(function(){
+        btn.disabled=false;
+        btn.textContent=t.btn_create;
+        showToast(t.err_network,'err');
+    });
+
+    return false;
+}
+</script>
+</body>
+</html>

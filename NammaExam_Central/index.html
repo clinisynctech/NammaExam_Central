@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NammaExam — Practice Previous Year Papers for Government Exams</title>
+    <meta name="description" content="Practice SSC CGL, CHSL, RRB NTPC, IBPS PO, UPSC CSE previous year papers. Real CBT interface, instant analytics. Free trial.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#ffffff;
+            --bg-alt:#f8f9fc;
+            --bg-card:#ffffff;
+            --text:#1a1a2e;
+            --text-mid:#4a4a6a;
+            --text-light:#8a8aa0;
+            --primary:#d62828;
+            --primary-light:#fef2f2;
+            --primary-hover:#b91c1c;
+            --accent:#1d4ed8;
+            --accent-light:#eff6ff;
+            --green:#16a34a;
+            --green-light:#f0fdf4;
+            --orange:#ea580c;
+            --orange-light:#fff7ed;
+            --border:#e5e7eb;
+            --border-light:#f3f4f6;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg:0 8px 30px rgba(0,0,0,0.1);
+            --radius:8px;
+            --radius-lg:12px;
+        }
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+        a{text-decoration:none;color:inherit}
+        img{max-width:100%;display:block}
+
+        /* ===== NAVBAR ===== */
+        .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+        .nav-brand{font-weight:800;font-size:20px;color:var(--text);display:flex;align-items:center;gap:6px}
+        .nav-brand em{font-style:normal;color:var(--primary)}
+        .nav-right{display:flex;align-items:center;gap:8px}
+        .lang-sw{display:flex;background:var(--bg-alt);border-radius:6px;padding:2px;border:1px solid var(--border)}
+        .lang-sw button{border:none;background:transparent;padding:4px 10px;font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;color:var(--text-light);transition:all .15s}
+        .lang-sw button.on{background:var(--primary);color:#fff}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+        .btn:active{transform:scale(.97)}
+        .btn-p{background:var(--primary);color:#fff}
+        .btn-p:hover{background:var(--primary-hover)}
+        .btn-s{background:transparent;color:var(--text-mid);border:1.5px solid var(--border)}
+        .btn-s:hover{border-color:var(--text-mid);color:var(--text)}
+        .btn-g{background:transparent;color:var(--text-mid);padding:8px 12px}
+        .btn-g:hover{color:var(--text)}
+        .nav-cta{display:flex;align-items:center;gap:6px}
+
+        /* ===== HERO ===== */
+        .hero{padding:48px 16px 40px;max-width:720px;margin:0 auto;text-align:center}
+        .hero-tag{display:inline-flex;align-items:center;gap:5px;background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:16px}
+        .hero h1{font-size:clamp(26px,5.5vw,42px);font-weight:800;line-height:1.2;margin-bottom:12px;letter-spacing:-.02em}
+        .hero h1 em{font-style:normal;color:var(--primary)}
+        .hero-sub{color:var(--text-mid);font-size:clamp(15px,2.5vw,17px);margin-bottom:28px;max-width:540px;margin-left:auto;margin-right:auto}
+        .hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+        .btn-hero{padding:12px 28px;font-size:15px;border-radius:var(--radius-lg);font-weight:700}
+        .hero-chips{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-light)}
+        .hero-chips span{display:flex;align-items:center;gap:4px}
+
+        /* ===== STATS STRIP ===== */
+        .stats{background:var(--bg-alt);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);padding:20px 16px}
+        .stats-in{max-width:800px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center}
+        .st-n{font-size:22px;font-weight:800;color:var(--text)}
+        .st-l{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+        /* ===== SECTION ===== */
+        .sec{padding:56px 16px}
+        .sec-in{max-width:960px;margin:0 auto}
+        .sec-h{text-align:center;margin-bottom:36px}
+        .sec-h h2{font-size:clamp(20px,4vw,28px);font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+        .sec-h p{color:var(--text-mid);font-size:15px}
+
+        /* ===== EXAM CARDS ===== */
+        .ex-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        .ex-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:all .15s}
+        .ex-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md)}
+        .ex-card:active{transform:scale(.98)}
+        .ex-ic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px}
+        .ex-nm{font-size:16px;font-weight:700;margin-bottom:2px}
+        .ex-ct{font-size:12px;color:var(--text-light);margin-bottom:10px}
+        .ex-tags{display:flex;flex-wrap:wrap;gap:4px}
+        .ex-tag{background:var(--bg-alt);border:1px solid var(--border-light);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;color:var(--text-mid)}
+
+        /* ===== FEATURES ===== */
+        .ft-grid{display:grid;grid-template-columns:1fr;gap:12px}
+        .ft-card{display:flex;gap:14px;padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);transition:all .15s}
+        .ft-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+        .ft-ic{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+        .ft-txt h3{font-size:15px;font-weight:700;margin-bottom:2px}
+        .ft-txt p{font-size:13px;color:var(--text-mid)}
+
+        /* ===== PRICING ===== */
+        .pr-grid{display:grid;grid-template-columns:1fr;gap:12px;max-width:420px;margin:0 auto}
+        .pr-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:24px;position:relative;transition:all .15s}
+        .pr-card:hover{box-shadow:var(--shadow-md)}
+        .pr-card.pop{border-color:var(--primary);box-shadow:0 0 0 3px rgba(214,40,40,0.08)}
+        .pr-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:2px 14px;border-radius:12px;font-size:11px;font-weight:700}
+        .pr-nm{font-size:17px;font-weight:700;margin-bottom:2px}
+        .pr-ds{font-size:12px;color:var(--text-light);margin-bottom:12px}
+        .pr-old{text-decoration:line-through;color:var(--text-light);font-size:14px}
+        .pr-cur{font-size:32px;font-weight:800}
+        .pr-per{font-size:12px;color:var(--text-light);margin-bottom:16px}
+        .pr-list{list-style:none;margin-bottom:20px}
+        .pr-list li{padding:4px 0;font-size:13px;color:var(--text-mid);display:flex;align-items:center;gap:8px}
+        .pr-list li .ck{color:var(--green);font-weight:700}
+        .pr-list li .nx{color:var(--border)}
+
+        /* ===== TESTIMONIALS ===== */
+        .tm-grid{display:grid;grid-template-columns:1fr;gap:12px}
+        .tm-card{background:var(--bg-alt);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px}
+        .tm-txt{font-size:14px;color:var(--text-mid);margin-bottom:10px;line-height:1.5}
+        .tm-au{font-size:13px;font-weight:600}
+        .tm-de{font-size:11px;color:var(--text-light)}
+
+        /* ===== CTA ===== */
+        .cta{padding:56px 16px;text-align:center;background:var(--bg-alt)}
+        .cta h2{font-size:clamp(20px,4vw,28px);font-weight:700;margin-bottom:8px}
+        .cta p{color:var(--text-mid);font-size:15px;margin-bottom:24px}
+
+        /* ===== FOOTER ===== */
+        .foot{border-top:1px solid var(--border);padding:32px 16px 20px}
+        .foot-in{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+        .foot h4{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text)}
+        .foot a{display:block;font-size:12px;color:var(--text-light);padding:2px 0}
+        .foot a:hover{color:var(--primary)}
+        .foot-bt{max-width:960px;margin:20px auto 0;padding-top:16px;border-top:1px solid var(--border-light);text-align:center;font-size:11px;color:var(--text-light)}
+
+        /* ===== WHATSAPP ===== */
+        .wa{position:fixed;bottom:20px;right:20px;z-index:99;background:#25d366;color:#fff;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 12px rgba(37,211,102,.35);cursor:pointer;transition:transform .15s}
+        .wa:hover{transform:scale(1.08)}
+
+        /* ===== OFFER BAR ===== */
+        .obar{background:var(--primary);color:#fff;text-align:center;padding:6px 16px;font-size:12px;font-weight:600}
+        .obar a{color:#fff;text-decoration:underline;font-weight:700}
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media(min-width:480px){
+            .ft-grid{grid-template-columns:1fr 1fr}
+            .tm-grid{grid-template-columns:1fr 1fr}
+        }
+        @media(min-width:640px){
+            .ex-grid{grid-template-columns:repeat(3,1fr)}
+            .pr-grid{grid-template-columns:repeat(3,1fr);max-width:100%}
+            .foot-in{grid-template-columns:2fr 1fr 1fr 1fr}
+        }
+        @media(min-width:768px){
+            .hero{padding:64px 24px 48px}
+            .sec{padding:72px 24px}
+            .ft-grid{grid-template-columns:repeat(3,1fr)}
+            .tm-grid{grid-template-columns:repeat(3,1fr)}
+        }
+    </style>
+</head>
+<body>
+
+<!-- OFFER BAR -- IMP
+<div class="obar">Republic Day Sale — <span id="cdTimer">67% OFF ends in 23:59</span> · <a href="#pricing">Full Access ₹199</a></div> -->
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-brand">Namma<em>Exam</em></div>
+    <div class="nav-right">
+        <div class="lang-sw">
+            <button class="on" id="len" onclick="setL('en')">EN</button>
+            <button id="lhi" onclick="setL('hi')">हिं</button>
+        </div>
+        <button class="btn btn-g nav-login" onclick="location.href='login.html'" data-t="login">Login</button>
+        <button class="btn btn-p" onclick="location.href='register.html'" data-t="start_free">Start Free</button>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-tag" data-t="htag">Made for Sarkari Exam Aspirants</div>
+    <h1 data-t="htitle">Practice Previous Year Papers in <em>Real Exam Interface</em></h1>
+    <p class="hero-sub" data-t="hsub">SSC CGL, CHSL, RRB NTPC, IBPS PO, UPSC CSE and 15+ exams. CBT interface, instant analytics, works offline on mobile.</p>
+    <div class="hero-btns">
+        <button class="btn btn-p btn-hero" onclick="location.href='register.html'" data-t="hbtn1">Start Free Practice</button>
+        <button class="btn btn-s btn-hero" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" data-t="hbtn2">View Plans</button>
+    </div>
+    <div class="hero-chips">
+        <span>🔒 Secure Payment</span>
+        <span>📱 Mobile Friendly</span>
+        <span>🌐 Offline Mode</span>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+    <div class="stats-in">
+        <div><div class="st-n">15+</div><div class="st-l">Exams</div></div>
+        <div><div class="st-n">60+</div><div class="st-l">Papers</div></div>
+        <div><div class="st-n">6000+</div><div class="st-l">Questions</div></div>
+        <div><div class="st-n">₹49</div><div class="st-l">Starts at</div></div>
+    </div>
+</section>
+
+<!-- EXAMS -->
+<section class="sec" id="exams">
+    <div class="sec-in">
+        <div class="sec-h"><h2 data-t="exT">All Major Central Exams</h2><p data-t="exS">One platform. Every exam. Real CBT practice.</p></div>
+        <div class="ex-grid">
+            <div class="ex-card" onclick="location.href='register.html'">
+                <div class="ex-ic" style="background:var(--primary-light);color:var(--primary)">📋</div>
+                <div class="ex-nm">SSC</div>
+                <div class="ex-ct">5 exams · 25 papers</div>
+                <div class="ex-tags"><span class="ex-tag">CGL</span><span class="ex-tag">CHSL</span><span class="ex-tag">MTS</span><span class="ex-tag">GD</span><span class="ex-tag">CPO</span></div>
+            </div>
+            <div class="ex-card" onclick="location.href='register.html'">
+                <div class="ex-ic" style="background:var(--accent-light);color:var(--accent)">🚂</div>
+                <div class="ex-nm">Railway (RRB)</div>
+                <div class="ex-ct">4 exams · 16 papers</div>
+                <div class="ex-tags"><span class="ex-tag">NTPC</span><span class="ex-tag">Group D</span><span class="ex-tag">ALP</span><span class="ex-tag">JE</span></div>
+            </div>
+            <div class="ex-card" onclick="location.href='register.html'">
+                <div class="ex-ic" style="background:var(--green-light);color:var(--green)">🏦</div>
+                <div class="ex-nm">Banking</div>
+                <div class="ex-ct">6 exams · 30 papers</div>
+                <div class="ex-tags"><span class="ex-tag">IBPS PO</span><span class="ex-tag">Clerk</span><span class="ex-tag">SBI PO</span><span class="ex-tag">RBI</span></div>
+            </div>
+            <div class="ex-card" onclick="location.href='register.html'">
+                <div class="ex-ic" style="background:var(--orange-light);color:var(--orange)">🏛️</div>
+                <div class="ex-nm">UPSC</div>
+                <div class="ex-ct">4 exams · 20 papers</div>
+                <div class="ex-tags"><span class="ex-tag">CSE</span><span class="ex-tag">CDS</span><span class="ex-tag">NDA</span><span class="ex-tag">CAPF</span></div>
+            </div>
+            <div class="ex-card" onclick="location.href='register.html'">
+                <div class="ex-ic" style="background:var(--accent-light);color:var(--accent)">🛡️</div>
+                <div class="ex-nm">Defence</div>
+                <div class="ex-ct">2 exams · 8 papers</div>
+                <div class="ex-tags"><span class="ex-tag">AFCAT</span><span class="ex-tag">INET</span></div>
+            </div>
+            <div class="ex-card" onclick="location.href='register.html'">
+                <div class="ex-ic" style="background:var(--bg-alt);color:var(--text-mid)">📜</div>
+                <div class="ex-nm">Others</div>
+                <div class="ex-ct">5 exams · 15 papers</div>
+                <div class="ex-tags"><span class="ex-tag">FCI</span><span class="ex-tag">ESIC</span><span class="ex-tag">EPFO</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="sec" id="features" style="background:var(--bg-alt)">
+    <div class="sec-in">
+        <div class="sec-h"><h2 data-t="ftT">Why Students Choose NammaExam</h2><p data-t="ftS">Built like the real computer-based test</p></div>
+        <div class="ft-grid">
+            <div class="ft-card">
+                <div class="ft-ic" style="background:var(--primary-light);color:var(--primary)">🖥️</div>
+                <div class="ft-txt"><h3>Real CBT Interface</h3><p>Same as actual exam. No surprises on test day.</p></div>
+            </div>
+            <div class="ft-card">
+                <div class="ft-ic" style="background:var(--accent-light);color:var(--accent)">📊</div>
+                <div class="ft-txt"><h3>Instant Analytics</h3><p>Score, accuracy, section-wise and topic-wise breakdown.</p></div>
+            </div>
+            <div class="ft-card">
+                <div class="ft-ic" style="background:var(--green-light);color:var(--green)">🌐</div>
+                <div class="ft-txt"><h3>Works Offline</h3><p>Test runs offline after loading. Submit when online.</p></div>
+            </div>
+            <div class="ft-card">
+                <div class="ft-ic" style="background:var(--orange-light);color:var(--orange)">📱</div>
+                <div class="ft-txt"><h3>Mobile Friendly</h3><p>Practice on phone. Install as app on home screen.</p></div>
+            </div>
+            <div class="ft-card">
+                <div class="ft-ic" style="background:var(--primary-light);color:var(--primary)">🔄</div>
+                <div class="ft-txt"><h3>Auto-Save & Resume</h3><p>Crash or phone call? Resume from where you left off.</p></div>
+            </div>
+            <div class="ft-card">
+                <div class="ft-ic" style="background:var(--accent-light);color:var(--accent)">🗣️</div>
+                <div class="ft-txt"><h3>English + Hindi</h3><p>Switch language anytime. Just like the real exam.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec" id="pricing">
+    <div class="sec-in">
+        <div class="sec-h"><h2>Simple Pricing</h2><p>Start free. Upgrade when ready.</p></div>
+        <div class="pr-grid">
+            <div class="pr-card">
+                <div class="pr-nm">Free</div>
+                <div class="pr-ds">Try before you buy</div>
+                <div class="pr-cur">₹0</div>
+                <div class="pr-per">&nbsp;</div>
+                <ul class="pr-list">
+                    <li><span class="ck">✓</span> 1 free paper per exam</li>
+                    <li><span class="ck">✓</span> Instant score & analytics</li>
+                    <li><span class="ck">✓</span> English + Hindi</li>
+                    <li><span class="nx">—</span> Sectional tests</li>
+                    <li><span class="nx">—</span> Mock tests</li>
+                </ul>
+                <button class="btn btn-s" style="width:100%" onclick="location.href='register.html'">Start Free</button>
+            </div>
+            <div class="pr-card">
+                <div class="pr-nm">Single Exam</div>
+                <div class="pr-ds">Focus on one exam</div>
+                <div><span class="pr-old">₹149</span> <span class="pr-cur">₹49</span></div>
+                <div class="pr-per">₹6 per paper</div>
+                <ul class="pr-list">
+                    <li><span class="ck">✓</span> All PYQ papers (1 exam)</li>
+                    <li><span class="ck">✓</span> 4 sectional tests</li>
+                    <li><span class="ck">✓</span> 1 mock test</li>
+                    <li><span class="ck">✓</span> Full analytics</li>
+                    <li><span class="ck">✓</span> Progress tracking</li>
+                </ul>
+                <button class="btn btn-p" style="width:100%" onclick="location.href='register.html'">Buy Now</button>
+            </div>
+            <div class="pr-card pop">
+                <div class="pr-badge">Most Popular</div>
+                <div class="pr-nm">Full Access</div>
+                <div class="pr-ds">Every exam, every paper</div>
+                <div><span class="pr-old">₹599</span> <span class="pr-cur">₹199</span></div>
+                <div class="pr-per">₹2.6 per paper</div>
+                <ul class="pr-list">
+                    <li><span class="ck">✓</span> All exams unlocked</li>
+                    <li><span class="ck">✓</span> All PYQ + Sectional + Mock</li>
+                    <li><span class="ck">✓</span> Topic-wise analytics</li>
+                    <li><span class="ck">✓</span> Weak area suggestions</li>
+                    <li><span class="ck">✓</span> Priority support</li>
+                </ul>
+                <button class="btn btn-p" style="width:100%" onclick="location.href='register.html'">Unlock All — ₹199</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="sec" style="background:var(--bg-alt)">
+    <div class="sec-in">
+        <div class="sec-h"><h2>What Students Say</h2></div>
+        <div class="tm-grid">
+            <div class="tm-card">
+                <div class="tm-txt">"Best ₹49 I ever spent. CBT interface is exactly like the real exam. Cleared SSC CGL pre!"</div>
+                <div class="tm-au">Rahul K.</div>
+                <div class="tm-de">SSC CGL 2023 · Patna</div>
+            </div>
+            <div class="tm-card">
+                <div class="tm-txt">"Analytics se pata chala Quant weak hai. Focus kiya, score 52 se 72 tak gaya!"</div>
+                <div class="tm-au">Priya S.</div>
+                <div class="tm-de">IBPS PO 2023 · Jaipur</div>
+            </div>
+            <div class="tm-card">
+                <div class="tm-txt">"Mobile pe perfect chalta hai. Bus mein daily practice karta tha. Auto-save life-saver hai."</div>
+                <div class="tm-au">Amit T.</div>
+                <div class="tm-de">RRB NTPC 2022 · Lucknow</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <h2>Start Practicing Today</h2>
+    <p>Free trial. No credit card needed.</p>
+    <button class="btn btn-p btn-hero" onclick="location.href='register.html'">Create Free Account</button>
+</section>
+
+<!-- FOOTER -->
+<!-- FOOTER -->
+<footer class="foot">
+    <div class="foot-in">
+        <div>
+            <div class="nav-brand" style="margin-bottom:8px">Namma<em>Exam</em></div>
+            <p style="font-size:12px;color:var(--text-light)">Practice portal for Indian<br>government exam aspirants.</p>
+        </div>
+        <div><h4>Exams</h4><a href="#">SSC CGL</a><a href="#">RRB NTPC</a><a href="#">IBPS PO</a><a href="#">UPSC CSE</a></div>
+        <div><h4>Company</h4><a href="#">About</a><a href="#">Contact</a><a href="#">Privacy Policy</a><a href="#">Refund Policy</a></div>
+        <div><h4>Connect</h4><a href="#">WhatsApp</a><a href="#">Telegram</a><a href="#">Instagram</a><a href="#">YouTube</a></div>
+    </div>
+    <div class="foot-bt">
+        © 2024 NammaExam. Made in India.
+        <br>
+        <span class="powered-by">Powered by <a href="https://nammaexam.online/" target="_blank" rel="noopener" class="clinisync-link">Clinisync Technology</a></span>
+    </div>
+</footer>
+
+<!-- WHATSAPP -->
+<a class="wa" href="https://wa.me/919876543210?text=Hi%2C%20I%20need%20help%20with%20NammaExam" target="_blank">💬</a>
+
+<script>
+// LANGUAGE
+const T={en:{htag:"Made for Sarkari Exam Aspirants",htitle:'Practice Previous Year Papers in <em>Real Exam Interface</em>',hsub:"SSC CGL, CHSL, RRB NTPC, IBPS PO, UPSC CSE and 15+ exams. CBT interface, instant analytics, works offline on mobile.",hbtn1:"Start Free Practice",hbtn2:"View Plans",login:"Login",start_free:"Start Free",exT:"All Major Central Exams",exS:"One platform. Every exam. Real CBT practice.",ftT:"Why Students Choose NammaExam",ftS:"Built like the real computer-based test"},hi:{htag:"सरकारी परीक्षा अभ्यर्थियों के लिए",htitle:'असली परीक्षा इंटरफेस में <em>पिछले वर्ष के पेपर</em> का अभ्यास करें',hsub:"SSC CGL, CHSL, RRB NTPC, IBPS PO, UPSC CSE और 15+ परीक्षाएं। CBT इंटरफेस, तुरंत विश्लेषण, मोबाइल पर ऑफलाइन।",hbtn1:"मुफ्त अभ्यास शुरू करें",hbtn2:"प्लान देखें",login:"लॉगिन",start_free:"मुफ्त शुरू",exT:"सभी प्रमुख केंद्रीय परीक्षाएं",exS:"एक प्लेटफॉर्म। हर परीक्षा। असली CBT अभ्यास।",ftT:"अभ्यर्थी NammaExam क्यों चुनते हैं",ftS:"असली कंप्यूटर-आधारित परीक्षा जैसा"}};
+function getL(){return localStorage.getItem('nl')||'en'}
+function setL(l){localStorage.setItem('nl',l);applyL(l);document.getElementById('len').classList.toggle('on',l==='en');document.getElementById('lhi').classList.toggle('on',l==='hi')}
+function applyL(l){var t=T[l]||T.en;document.querySelectorAll('[data-t]').forEach(function(e){var k=e.getAttribute('data-t');if(t[k])e.innerHTML=t[k]})}
+applyL(getL());document.getElementById('len').classList.toggle('on',getL()==='en');document.getElementById('lhi').classList.toggle('on',getL()==='hi');
+
+// COUNTDOWN
+function upCD(){var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);var d=e-n,h=Math.floor(d/36e5),m=Math.floor((d%36e5)/6e4),s=Math.floor((d%6e4)/1e3);var el=document.getElementById('cdTimer');if(el){el.textContent=(getL()==='hi'?'67% छूट '+h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' में':'67% OFF ends in '+h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'))}}
+upCD();setInterval(upCD,1000);
+</script>
+</body>
+</html>
