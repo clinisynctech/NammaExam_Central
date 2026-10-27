@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — NammaExam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#ffffff;--bg-alt:#f8f9fc;--bg-card:#ffffff;
+            --text:#1a1a2e;--text-mid:#4a4a6a;--text-light:#8a8aa0;
+            --primary:#d62828;--primary-light:#fef2f2;--primary-hover:#b91c1c;
+            --accent:#1d4ed8;--accent-light:#eff6ff;
+            --green:#16a34a;--green-light:#f0fdf4;
+            --orange:#ea580c;--orange-light:#fff7ed;
+            --border:#e5e7eb;--border-light:#f3f4f6;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+            --radius:8px;--radius-lg:12px;
+        }
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-alt);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+        a{text-decoration:none;color:inherit}
+
+        /* NAV */
+        .nav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+        .nav-l{display:flex;align-items:center;gap:12px}
+        .nav-brand{font-weight:800;font-size:18px;color:var(--text);cursor:pointer}
+        .nav-brand em{font-style:normal;color:var(--primary)}
+        .nav-r{display:flex;align-items:center;gap:8px}
+        .lang-sw{display:flex;background:var(--bg-alt);border-radius:6px;padding:2px;border:1px solid var(--border)}
+        .lang-sw button{border:none;background:transparent;padding:4px 10px;font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;color:var(--text-light);transition:all .15s}
+        .lang-sw button.on{background:var(--primary);color:#fff}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+        .btn:active{transform:scale(.97)}
+        .btn-p{background:var(--primary);color:#fff}
+        .btn-p:hover{background:var(--primary-hover)}
+        .btn-s{background:transparent;color:var(--text-mid);border:1.5px solid var(--border)}
+        .btn-s:hover{border-color:var(--text-mid)}
+        .btn-g{background:transparent;color:var(--text-mid);padding:8px 10px}
+        .btn-g:hover{color:var(--text)}
+
+        /* LAYOUT */
+        .page{max-width:960px;margin:0 auto;padding:20px 16px 40px}
+
+        /* WELCOME */
+        .welcome{margin-bottom:24px}
+        .welcome h1{font-size:22px;font-weight:700}
+        .welcome h1 em{font-style:normal;color:var(--primary)}
+        .welcome p{font-size:13px;color:var(--text-light);margin-top:2px}
+
+        /* STATS ROW */
+        .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
+        .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+        .stat-val{font-size:24px;font-weight:800}
+        .stat-lbl{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.3px;margin-top:1px}
+
+        /* SECTION TITLE */
+        .sec-t{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+        .sec-t a{font-size:12px;font-weight:600;color:var(--primary)}
+
+        /* EXAM CATEGORIES */
+        .cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px}
+        .cat-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:12px}
+        .cat-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+        .cat-card:active{transform:scale(.98)}
+        .cat-ic{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+        .cat-info{flex:1;min-width:0}
+        .cat-nm{font-size:14px;font-weight:700;margin-bottom:1px}
+        .cat-ct{font-size:11px;color:var(--text-light)}
+        .cat-badge{display:inline-block;background:var(--green-light);color:var(--green);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px}
+
+        /* RECENT ACTIVITY */
+        .activity{margin-bottom:28px}
+        .act-list{display:flex;flex-direction:column;gap:8px}
+        .act-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .15s}
+        .act-item:hover{border-color:var(--primary)}
+        .act-left{display:flex;align-items:center;gap:10px}
+        .act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+        .act-info .act-exam{font-size:13px;font-weight:600}
+        .act-info .act-paper{font-size:11px;color:var(--text-light)}
+        .act-right{text-align:right}
+        .act-score{font-size:14px;font-weight:700}
+        .act-time{font-size:11px;color:var(--text-light)}
+        .act-empty{text-align:center;padding:24px;color:var(--text-light);font-size:13px}
+
+        /* PLAN CARD */
+        .plan-card{background:linear-gradient(135deg,var(--primary) 0%,#b91c1c 100%);color:#fff;border-radius:var(--radius-lg);padding:20px;margin-bottom:28px}
+        .plan-card h3{font-size:16px;font-weight:700;margin-bottom:4px}
+        .plan-card p{font-size:12px;opacity:.85;margin-bottom:14px}
+        .plan-card .btn{background:#fff;color:var(--primary);font-weight:700}
+        .plan-card .btn:hover{opacity:.9}
+
+        /* PROGRESS BAR */
+        .prog-section{margin-bottom:28px}
+        .prog-item{margin-bottom:12px}
+        .prog-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+        .prog-head span:first-child{font-weight:600}
+        .prog-head span:last-child{color:var(--text-light)}
+        .prog-bar{height:6px;background:var(--border-light);border-radius:3px;overflow:hidden}
+        .prog-fill{height:100%;border-radius:3px;transition:width .5s}
+
+        /* LOADING */
+        .loading{display:flex;align-items:center;justify-content:center;padding:60px 0;flex-direction:column;gap:12px}
+        .ld-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading p{font-size:13px;color:var(--text-light)}
+
+        /* TOAST */
+        .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:var(--shadow-md);display:none;max-width:360px;text-align:center}
+        .toast.err{background:var(--primary);color:#fff}
+        .toast.ok{background:var(--green);color:#fff}
+        .toast.show{display:block}
+
+        /* POWERED BY */
+        .pwb{text-align:center;padding:16px;font-size:12px;color:var(--text-light)}
+        .pwb a{color:var(--primary);font-weight:700}
+
+        /* RESPONSIVE */
+        @media(min-width:480px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+        @media(min-width:640px){.cat-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(min-width:768px){.page{padding:28px 24px 48px}.welcome h1{font-size:26px}}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-l">
+        <div class="nav-brand" onclick="location.href='dashboard.html'">Namma<em>Exam</em></div>
+    </div>
+    <div class="nav-r">
+        <div class="lang-sw">
+            <button class="on" id="len" onclick="setL('en')">EN</button>
+            <button id="lhi" onclick="setL('hi')">हिं</button>
+        </div>
+        <button class="btn btn-g" onclick="location.href='progress.html'" title="Progress">📈</button>
+        <button class="btn btn-g" id="logoutBtn" onclick="logout()" title="Logout">🚪</button>
+    </div>
+</nav>
+
+<!-- LOADING STATE -->
+<div class="loading" id="loadingState">
+    <div class="ld-spinner"></div>
+    <p data-t="loading">Loading dashboard...</p>
+</div>
+
+<!-- MAIN CONTENT (hidden until loaded) -->
+<div class="page" id="pageContent" style="display:none">
+
+    <!-- WELCOME -->
+    <div class="welcome">
+        <h1 data-t="welcome">Welcome, <em id="userName">Student</em></h1>
+        <p id="userPlan"></p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-val" id="statTests">0</div>
+            <div class="stat-lbl" data-t="st_tests">Tests Taken</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="statAvg">0%</div>
+            <div class="stat-lbl" data-t="st_avg">Avg Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="statBest">0</div>
+            <div class="stat-lbl" data-t="st_best">Best Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="statStreak">0</div>
+            <div class="stat-lbl" data-t="st_streak">Day Streak</div>
+        </div>
+    </div>
+
+    <!-- EXAM CATEGORIES -->
+    <div class="sec-t"><span data-t="sec_exams">Choose Exam</span></div>
+    <div class="cat-grid" id="catGrid">
+        <div class="cat-card" onclick="goExam('ssc')">
+            <div class="cat-ic" style="background:var(--primary-light);color:var(--primary)">📋</div>
+            <div class="cat-info">
+                <div class="cat-nm">SSC</div>
+                <div class="cat-ct">CGL, CHSL, MTS, GD, CPO</div>
+            </div>
+        </div>
+        <div class="cat-card" onclick="goExam('rrb')">
+            <div class="cat-ic" style="background:var(--accent-light);color:var(--accent)">🚂</div>
+            <div class="cat-info">
+                <div class="cat-nm">Railway (RRB)</div>
+                <div class="cat-ct">NTPC, Group D, ALP, JE</div>
+            </div>
+        </div>
+        <div class="cat-card" onclick="goExam('bank')">
+            <div class="cat-ic" style="background:var(--green-light);color:var(--green)">🏦</div>
+            <div class="cat-info">
+                <div class="cat-nm">Banking</div>
+                <div class="cat-ct">IBPS PO, Clerk, SBI, RBI</div>
+            </div>
+        </div>
+        <div class="cat-card" onclick="goExam('upsc')">
+            <div class="cat-ic" style="background:var(--orange-light);color:var(--orange)">🏛️</div>
+            <div class="cat-info">
+                <div class="cat-nm">UPSC</div>
+                <div class="cat-ct">CSE, CDS, NDA, CAPF</div>
+            </div>
+        </div>
+        <div class="cat-card" onclick="goExam('defence')">
+            <div class="cat-ic" style="background:var(--accent-light);color:var(--accent)">🛡️</div>
+            <div class="cat-info">
+                <div class="cat-nm">Defence</div>
+                <div class="cat-ct">AFCAT, INET</div>
+            </div>
+        </div>
+        <div class="cat-card" onclick="goExam('other')">
+            <div class="cat-ic" style="background:var(--bg-alt);color:var(--text-mid)">📜</div>
+            <div class="cat-info">
+                <div class="cat-nm">Others</div>
+                <div class="cat-ct">FCI, ESIC, EPFO</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="activity">
+        <div class="sec-t"><span data-t="sec_recent">Recent Activity</span><a href="progress.html" data-t="view_all">View All</a></div>
+        <div class="act-list" id="actList">
+            <div class="act-empty" data-t="no_activity">No tests taken yet. Start practicing!</div>
+        </div>
+    </div>
+
+    <!-- PROGRESS (if tests taken) -->
+    <div class="prog-section" id="progSection" style="display:none">
+        <div class="sec-t"><span data-t="sec_prog">Section Performance</span></div>
+        <div id="progList"></div>
+    </div>
+
+    <!-- PLAN PROMO (for free users) -->
+    <div class="plan-card" id="planPromo">
+        <h3 data-t="plan_title">Unlock All Exams</h3>
+        <p data-t="plan_desc">Get all previous year papers, sectional tests, and mock tests for every exam.</p>
+        <button class="btn" onclick="location.href='plans.html'" data-t="plan_btn">View Plans — Starting ₹49</button>
+    </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- POWERED BY -->
+<div class="pwb" id="pwb" style="display:none">
+    Namma Exam — Powered by <a href="https://nammaexam.online/" target="_blank" rel="noopener">Clinisync Technology</a>
+</div>
+
+<script>
+// ===== API =====
+var API='https://script.google.com/macros/s/AKfycbxn_syphrTs7NP4QaVpOznYyds4ekTQlCjXxkX3uakfJHJmPKSiq83DVztoVeWpp8TVyg/exec';
+
+// ===== AUTH CHECK =====
+var token=localStorage.getItem('token');
+var user=JSON.parse(localStorage.getItem('user')||'{}');
+if(!token||!user.userId){location.href='login.html'}
+
+// ===== LANGUAGE =====
+var T={en:{loading:"Loading dashboard...",welcome:"Welcome,",st_tests:"Tests Taken",st_avg:"Avg Score",st_best:"Best Score",st_streak:"Day Streak",sec_exams:"Choose Exam",sec_recent:"Recent Activity",view_all:"View All",no_activity:"No tests taken yet. Start practicing!",sec_prog:"Section Performance",plan_title:"Unlock All Exams",plan_desc:"Get all previous year papers, sectional tests, and mock tests for every exam.",plan_btn:"View Plans — Starting ₹49",plan_free:"Free Plan · 1 paper per exam",plan_paid:"Plan Active · Full access",logout_msg:"Logged out"},hi:{loading:"डैशबोर्ड लोड हो रहा है...",welcome:"स्वागत है,",st_tests:"टेस्ट दिए",st_avg:"औसत स्कोर",st_best:"सर्वश्रेष्ठ",st_streak:"दिन की श्रृंखला",sec_exams:"परीक्षा चुनें",sec_recent:"हाल की गतिविधि",view_all:"सभी देखें",no_activity:"अभी तक कोई टेस्ट नहीं। अभ्यास शुरू करें!",sec_prog:"खंड का प्रदर्शन",plan_title:"सभी परीक्षाएं अनलॉक करें",plan_desc:"हर परीक्षा के सभी पेपर, खंडवार टेस्ट और मॉक टेस्ट पाएं।",plan_btn:"प्लान देखें — ₹49 से शुरू",plan_free:"मुफ्त प्लान · प्रति परीक्षा 1 पेपर",plan_paid:"प्लान सक्रिय · पूरा एक्सेस",logout_msg:"लॉगआउट हो गया"}};
+function getL(){return localStorage.getItem('nl')||'en'}
+function setL(l){localStorage.setItem('nl',l);applyL(l);document.getElementById('len').classList.toggle('on',l==='en');document.getElementById('lhi').classList.toggle('on',l==='hi')}
+function applyL(l){var t=T[l]||T.en;document.querySelectorAll('[data-t]').forEach(function(e){var k=e.getAttribute('data-t');if(t[k])e.innerHTML=t[k]})}
+applyL(getL());document.getElementById('len').classList.toggle('on',getL()==='en');document.getElementById('lhi').classList.toggle('on',getL()==='hi');
+
+// ===== TOAST =====
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(function(){t.classList.remove('show')},3000)}
+
+// ===== LOGOUT =====
+function logout(){localStorage.removeItem('token');localStorage.removeItem('user');showToast(T[getL()].logout_msg,'ok');setTimeout(function(){location.href='login.html'},1000)}
+
+// ===== GO TO EXAM =====
+function goExam(body){location.href='exam.html?body='+body}
+
+// ===== LOAD DASHBOARD =====
+function loadDashboard(){
+    // Set user name
+    var nameEl=document.getElementById('userName');
+    if(nameEl && user.name){nameEl.textContent=user.name}
+
+    // Set plan info
+    var planEl=document.getElementById('userPlan');
+    var lang=getL(),t=T[lang];
+    var plan=(user.plan||'free');
+    if(planEl){
+        if(plan==='free'){
+            planEl.textContent=t.plan_free;
+        } else {
+            planEl.textContent=t.plan_paid;
+            var promoEl=document.getElementById('planPromo');
+            if(promoEl){promoEl.style.display='none'}
+        }
+    }
+
+    // Fetch dashboard data from API
+    fetch(API+'?action=getDashboard&token='+encodeURIComponent(token))
+    .then(function(r){return r.json()})
+    .then(function(data){
+        if(data.error&&data.code===401){
+            location.href='login.html';
+            return;
+        }
+        renderDashboard(data);
+    })
+    .catch(function(){
+        // Show cached data if available
+        var cached=JSON.parse(localStorage.getItem('dash_cache')||'null');
+        if(cached){renderDashboard(cached)}
+        else{renderDashboard({})}
+    });
+}
+
+function renderDashboard(data){
+    // Hide loading, show content
+    document.getElementById('loadingState').style.display='none';
+    document.getElementById('pageContent').style.display='block';
+    document.getElementById('pwb').style.display='block';
+
+    // Stats
+    var stats=data.stats||{};
+    document.getElementById('statTests').textContent=stats.testsTaken||0;
+    document.getElementById('statAvg').textContent=(stats.avgAccuracy||0)+'%';
+    document.getElementById('statBest').textContent=stats.bestScore||0;
+    document.getElementById('statStreak').textContent=stats.streak||0;
+
+    // Recent activity
+    var recent=data.recentResults||[];
+    var actList=document.getElementById('actList');
+    if(recent.length>0){
+        actList.innerHTML='';
+        recent.slice(0,5).forEach(function(r){
+            var scoreColor=r.accuracy>=70?'var(--green)':r.accuracy>=50?'var(--orange)':'var(--primary)';
+            actList.innerHTML+=
+                '<div class="act-item" onclick="location.href=\'result.html?id='+r.resultId+'\'">'+
+                    '<div class="act-left">'+
+                        '<div class="act-dot" style="background:'+scoreColor+'"></div>'+
+                        '<div class="act-info">'+
+                            '<div class="act-exam">'+r.examName+'</div>'+
+                            '<div class="act-paper">'+r.paperId+'</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="act-right">'+
+                        '<div class="act-score" style="color:'+scoreColor+'">'+r.score+'/'+r.total+'</div>'+
+                        '<div class="act-time">'+r.timeTaken+'</div>'+
+                    '</div>'+
+                '</div>';
+        });
+    }
+
+    // Section progress
+    var sections=data.sectionPerformance||{};
+    var secKeys=Object.keys(sections);
+    if(secKeys.length>0){
+        document.getElementById('progSection').style.display='block';
+        var progList=document.getElementById('progList');
+        progList.innerHTML='';
+        secKeys.forEach(function(sec){
+            var acc=sections[sec];
+            var color=acc>=70?'var(--green)':acc>=50?'var(--orange)':'var(--primary)';
+            progList.innerHTML+=
+                '<div class="prog-item">'+
+                    '<div class="prog-head"><span>'+sec+'</span><span>'+acc+'%</span></div>'+
+                    '<div class="prog-bar"><div class="prog-fill" style="width:'+acc+'%;background:'+color+'"></div></div>'+
+                '</div>';
+        });
+    }
+
+    // Cache data
+    localStorage.setItem('dash_cache',JSON.stringify(data));
+}
+
+// ===== INIT =====
+loadDashboard();
+</script>
+</body>
+</html>

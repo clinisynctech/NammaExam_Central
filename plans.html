@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans — NammaExam</title6>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#ffffff;--bg-alt:#f8f9fc;--bg-card:#ffffff;
+            --text:#1a1a2e;--text-mid:#4a4a6a;--text-light:#8a8aa0;
+            --primary:#d62828;--primary-light:#fef2f2;--primary-hover:#b91c1c;
+            --accent:#1d4ed8;--accent-light:#eff6ff;
+            --green:#16a34a;--green-light:#f0fdf4;
+            --orange:#ea580c;--orange-light:#fff7ed;
+            --border:#e5e7eb;--border-light:#f3f4f6;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg:0 8px 30px rgba(0,0,0,0.12);
+            --radius:8px;--radius-lg:12px;
+        }
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-alt);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+        a{text-decoration:none;color:inherit}
+
+        /* NAV */
+        .nav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+        .nav-l{display:flex;align-items:center;gap:10px}
+        .back-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-mid);padding:4px}
+        .back-btn:hover{color:var(--text)}
+        .nav-brand{font-weight:800;font-size:18px;color:var(--text)}
+        .nav-brand em{font-style:normal;color:var(--primary)}
+        .nav-r{display:flex;align-items:center;gap:8px}
+        .lang-sw{display:flex;background:var(--bg-alt);border-radius:6px;padding:2px;border:1px solid var(--border)}
+        .lang-sw button{border:none;background:transparent;padding:4px 10px;font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;color:var(--text-light);transition:all .15s}
+        .lang-sw button.on{background:var(--primary);color:#fff}
+
+        /* PAGE */
+        .page{max-width:800px;margin:0 auto;padding:20px 16px 60px}
+
+        /* HEADER */
+        .pg-head{text-align:center;margin-bottom:32px}
+        .pg-head h1{font-size:24px;font-weight:700;margin-bottom:4px}
+        .pg-head p{font-size:14px;color:var(--text-mid)}
+
+        /* COUNTDOWN */
+        .cd-bar{background:var(--primary);color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:600;border-radius:var(--radius-lg);margin-bottom:24px}
+        .cd-bar .timer{font-weight:800;font-variant-numeric:tabular-nums}
+
+        /* CURRENT PLAN */
+        .current-plan{background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+        .cp-left{display:flex;align-items:center;gap:8px}
+        .cp-icon{font-size:18px}
+        .cp-text{font-size:13px;font-weight:600;color:var(--green)}
+        .cp-text small{font-weight:400;display:block;font-size:11px;opacity:.7}
+
+        /* PLAN CARDS */
+        .plans-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:32px}
+
+        .plan-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:24px;position:relative;transition:all .15s}
+        .plan-card:hover{box-shadow:var(--shadow-md)}
+        .plan-card.popular{border-color:var(--primary);box-shadow:0 0 0 3px rgba(214,40,40,0.08)}
+        .plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:2px 14px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+
+        .pc-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+        .pc-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+        .pc-name{font-size:17px;font-weight:700}
+        .pc-desc{font-size:12px;color:var(--text-light)}
+
+        .pc-price{margin-bottom:16px}
+        .pc-old{text-decoration:line-through;color:var(--text-light);font-size:14px;margin-right:6px}
+        .pc-cur{font-size:32px;font-weight:800}
+        .pc-per{font-size:12px;color:var(--text-light);margin-top:2px}
+        .pc-save{display:inline-block;background:var(--green-light);color:var(--green);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:8px}
+
+        .pc-features{list-style:none;margin-bottom:20px}
+        .pc-features li{padding:4px 0;font-size:13px;color:var(--text-mid);display:flex;align-items:center;gap:8px}
+        .pc-features li .ck{color:var(--green);font-weight:700;font-size:14px}
+        .pc-features li .nx{color:var(--border);font-size:14px}
+
+        .pc-exams{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}
+        .pc-exam-tag{background:var(--bg-alt);border:1px solid var(--border-light);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;color:var(--text-mid)}
+
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;width:100%}
+        .btn:active{transform:scale(.97)}
+        .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .btn-p{background:var(--primary);color:#fff}
+        .btn-p:hover:not(:disabled){background:var(--primary-hover)}
+        .btn-s{background:transparent;color:var(--text-mid);border:1.5px solid var(--border)}
+        .btn-s:hover{border-color:var(--text-mid)}
+
+        .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* FAQ */
+        .faq-sec{margin-bottom:32px}
+        .faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+        .faq-q{padding:14px 16px;font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .12s}
+        .faq-q:hover{color:var(--primary)}
+        .faq-q .arrow{font-size:12px;transition:transform .2s}
+        .faq-item.open .faq-q .arrow{transform:rotate(180deg)}
+        .faq-a{padding:0 16px;font-size:13px;color:var(--text-mid);max-height:0;overflow:hidden;transition:all .2s}
+        .faq-item.open .faq-a{padding:0 16px 14px;max-height:200px}
+
+        /* MODAL */
+        .modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}
+        .modal-bg.open{display:flex}
+        .modal{background:var(--bg-card);border-radius:var(--radius-lg);padding:28px;max-width:380px;width:100%;text-align:center;box-shadow:var(--shadow-lg)}
+        .modal h2{font-size:20px;font-weight:700;margin-bottom:8px}
+        .modal p{font-size:13px;color:var(--text-mid);margin-bottom:20px}
+        .modal .btn{margin-bottom:8px}
+
+        /* TOAST */
+        .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:var(--shadow-md);display:none;max-width:360px;text-align:center}
+        .toast.err{background:var(--primary);color:#fff}
+        .toast.ok{background:var(--green);color:#fff}
+        .toast.show{display:block}
+
+        /* POWERED BY */
+        .pwb{text-align:center;padding:16px;font-size:12px;color:var(--text-light)}
+        .pwb a{color:var(--primary);font-weight:700}
+
+        @media(min-width:640px){.plans-grid{grid-template-columns:repeat(2,1fr)}.page{padding:28px 24px 60px}}
+        @media(min-width:768px){.plans-grid{grid-template-columns:repeat(3,1fr)}}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-l">
+        <button class="back-btn" onclick="location.href='dashboard.html'">←</button>
+        <div class="nav-brand">Namma<em>Exam</em></div>
+    </div>
+    <div class="nav-r">
+        <div class="lang-sw">
+            <button class="on" id="len" onclick="setL('en')">EN</button>
+            <button id="lhi" onclick="setL('hi')">हिं</button>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+    <!-- HEADER -->
+    <div class="pg-head">
+        <h1>Choose Your Plan</h1>
+        <p>Start free. Upgrade when you're ready.</p>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="cd-bar">Republic Day Sale — <span class="timer" id="cdTimer">67% OFF</span> · Limited time</div>
+
+    <!-- CURRENT PLAN -->
+    <div class="current-plan" id="currentPlan" style="display:none">
+        <div class="cp-left">
+            <span class="cp-icon">✅</span>
+            <span class="cp-text" id="cpText">Free Plan<small>1 free paper per exam</small></span>
+        </div>
+    </div>
+
+    <!-- PLANS -->
+    <div class="plans-grid" id="plansGrid"></div>
+
+    <!-- FAQ -->
+    <div class="faq-sec">
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;text-align:center">Frequently Asked Questions</h2>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I try before paying?<span class="arrow">▼</span></div>
+            <div class="faq-a">Yes! Every exam has 1 free previous year paper. No payment needed to try.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What payment methods do you accept?<span class="arrow">▼</span></div>
+            <div class="faq-a">UPI (Google Pay, PhonePe, Paytm), debit cards, credit cards, and wallets. UPI is fastest.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Is this a one-time payment?<span class="arrow">▼</span></@div>
+            <div class="faq-a">Yes, you pay once and get access forever. No monthly subscription, no recurring charges.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Can I access on phone and laptop?<span class="arrow">▼</span></div>
+            <div class="faq-a">Yes, NammaExam works on any device with a browser. Your progress syncs across devices.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">What if I'm not satisfied?<span class="arrow">▼</span></div>
+            <div class="faq-a">Try the free paper first. If you've paid and are not happy within 7 days, contact us on WhatsApp for a full refund.</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-bg" id="successModal">
+    <div class="modal">
+        <div style="font-size:48px;margin-bottom:12px">🎉</div>
+        <h2>Plan Activ"Unlocked!"</h2>
+        <p id="successMsg">Your plan is now active. Start practicing!</p>
+        <button class="btn btn-p" onclick="location.href='dashboard.html'">Go to Dashboard</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- POWERED BY -->
+<div class="pwb">
+    Namma Exam — Powered by <a href="https://nammaexam.online/" target="_blank" rel="noopener">Clinisync Technology</a>
+</div>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbxn_syphrTs7NP4QaVpOznYyds4ekTQlCjXxkX3uakfJHJmPKSiq83DVztoVeWpp8TVyg/exec';
+var token=localStorage.getItem('token');
+var user=JSON.parse(localStorage.getItem('user')||'{}');
+
+// ===== PLANS DATA =====
+var plans=[
+    {
+        id:'single',name:'Single Exam',desc:'Focus on one exam',
+        icon:'🎯',iconBg:'var(--accent-light)',iconColor:'var(--accent)',
+        price:49,original:149,per:'₹6 per paper',
+        exams:'Pick any 1 exam',examTags:[],
+        features:[
+            {t:'All PYQ papers (1 exam)',on:true},
+            {t:'4 sectional tests',on:true},
+            {t:'1 mock test',on:true},
+            {t:'Full analytics',on:true},
+            {t:'Progress tracking',on:true},
+            {t:'English + Hindi',on:true},
+            {t:'Other exams',on:false}
+        ],
+        popular:false
+    },
+    {
+        id:'ssc-pack',name:'SSC Pack',desc:'All SSC exams',
+        icon:'📋',iconBg:'var(--primary-light)',iconColor:'var(--primary)',
+        price:99,original:245,per:'₹4 per paper',
+        exams:'5 SSC exams',examTags:['CGL','CHSL','MTS','GD','CPO'],
+        features:[
+            {t:'All SSC PYQ papers',on:true},
+            {t:'20 sectional tests',on:true},
+            {t:'10 mock tests',on:true},
+            {t:'Full analytics',on:true},
+            {t:'Progress tracking',on:true},
+            {t:'English + Hindi',on:true},
+            {t:'Non-SSC exams',on:false}
+        ],
+        popular:false
+    },
+    {
+        id:'full',name:'Full Access',desc:'Every exam, every paper',
+        icon:'🔥',iconBg:'var(--orange-light)',iconColor:'var(--orange)',
+        price:199,original:599,per:'₹2.6 per paper',
+        exams:'All 15+ exams',examTags:['SSC','RRB','Bank','UPSC','Defence'],
+        features:[
+            {t:'All exams unlocked',on:true},
+            {t:'All PYQ papers',on:true},
+            {t:'All sectional + mock tests',on:true},
+            {t:'Topic-wise analytics',on:true},
+            {t:'Weak area suggestions',on:true},
+            {t:'Priority WhatsApp support',on:true},
+            {t:'New exams added free',on:true}
+        ],
+        popular:true
+    },
+    {
+        id:'bank-pack',name:'Banking Pack',desc:'All banking exams',
+        icon:'🏦',iconBg:'var(--green-light)',iconColor:'var(--green)',
+        price:99,original:245,per:'₹4 per paper',
+        exams:'6 banking exams',examTags:['IBPS PO','Clerk','SBI PO','RBI'],
+        features:[
+            {t:'All Banking PYQ papers',on:true},
+            {t:'24 sectional tests',on:true},
+            {t:'12 mock tests',on:true},
+            {t:'Full analytics',on:true},
+            {t:'Progress tracking',on:true},
+            {t:'English + Hindi',on:true},
+            {t:'Non-Banking exams',on:false}
+        ],
+        popular:false
+    },
+    {
+        id:'rrb-pack',name:'Railway Pack',desc:'All railway exams',
+        icon:'🚂',iconBg:'var(--accent-light)',iconColor:'var(--accent)',
+        price:99,original:245,per:'₹4 per paper',
+        exams:'4 railway exams',examTags:['NTPC','Group D','ALP','JE'],
+        features:[
+            {t:'All Railway PYQ papers',on:true},
+            {t:'16 sectional tests',on:true},
+            {t:'8 mock tests',on:true},
+            {t:'Full analytics',on:true},
+            {t:'Progress tracking',on:true},
+            {t:'English + Hindi',on:true},
+            {t:'Non-Railway exams',on:false}
+        ],
+        popular:false
+    },
+    {
+        id:'upsc-pack',name:'UPSC Pack',desc:'All UPSC exams',
+        icon:'🏛️',iconBg:'var(--orange-light)',iconColor:'var(--orange)',
+        price:149,original:399,per:'₹5 per paper',
+        exams:'4 UPSC exams',examTags:['CSE','CDS','NDA','CAPF'],
+        features:[
+            {t:'All UPSC PYQ papers',on:true},
+            {t:'16 sectional tests',on:true},
+            {t:'8 mock tests',on:true},
+            {t:'Topic-wise deep analytics',on:true},
+            {t:'GS subject breakdown',on:true},
+            {t:'Priority support',on:true},
+            {t:'Non-UPSC exams',on:false}
+        ],
+        popular:false
+    }
+];
+
+// ===== LANGUAGE =====
+function getL(){return localStorage.getItem('nl')||'en'}
+function setL(l){localStorage.setItem('nl',l);document.getElementById('len').classList.toggle('on',l==='en');document.getElementById('lhi').classList.toggle('on',l==='hi');renderPlans()}
+applyL(getL());
+function applyL(l){document.getElementById('len').classList.toggle('on',l==='en');document.getElementById('lhi').classList.toggle('on',l==='hi')}
+
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(function(){t.classList.remove('show')},4000)}
+function toggleFaq(el){el.classList.toggle('open')}
+
+// ===== RENDER PLANS =====
+function renderPlans(){
+    var userPlan=(user.plan||'free');
+    var html='';
+    plans.forEach(function(p){
+        var isCurrent=userPlan===p.id;
+        var cardCls='plan-card'+(p.popular?' popular':'');
+        var savePct=Math.round((1-p.price/p.original)*100);
+
+        html+='<div class="'+cardCls+'">';
+        if(p.popular)html+='<div class="plan-badge">Most Popular</div>';
+        if(isCurrent)html+='<div class="plan-badge" style="background:var(--green)">Current Plan</div>';
+
+        html+=
+            '<div class="pc-head">'+
+                '<div class="pc-icon" style="background:'+p.iconBg+';color:'+p.iconColor+'">'+p.icon+'</div>'+
+                '<div><div class="pc-name">'+p.name+'</div><div class="pc-desc">'+p.desc+'</div></div>'+
+            '</div>'+
+            '<div class="pc-price">'+
+                '<span class="pc-old">₹'+p.original+'</span>'+
+                '<span class="pc-cur">₹'+p.price+'</span>'+
+                '<span class="pc-save">'+savePct+'% OFF</span>'+
+                '<div class="pc-per">'+p.per+'</div>'+
+            '</div>';
+
+        if(p.examTags.length>0){
+            html+='<div class="pc-exams">';
+            p.examTags.forEach(function(tag){html+='<span class="pc-exam-tag">'+tag+'</span>'});
+            html+='</div>';
+        } else {
+            html+='<div class="pc-exams"><span class="pc-exam-tag" style="background:var(--accent-light);color:var(--accent);border-color:var(--accent)">Choose any 1 exam</span></div>';
+        }
+
+        html+='<ul class="pc-features">';
+        p.features.forEach(function(f){
+            html+='<li><span class="'+(f.on?'ck':'nx')+'">'+(f.on?'✓':'—')+'</span>'+f.t+'</li>';
+        });
+        html+='</ul>';
+
+        if(isCurrent){
+            html+='<button class="btn btn-s" disabled>Current Plan</button>';
+        } else {
+            html+='<button class="btn btn-p" onclick="initPayment(\''+p.id+'\','+p.price+',\''+p.name+'\')">Buy for ₹'+p.price+'</button>';
+        }
+
+        html+='</div>';
+    });
+    document.getElementById('plansGrid').innerHTML=html;
+
+    // Current plan banner
+    if(userPlan!=='free'){
+        document.getElementById('currentPlan').style.display='flex';
+        var planNames={single:'Single Exam','ssc-pack':'SSC Pack','bank-pack':'Banking Pack','rrb-pack':'Railway Pack','upsc-pack':'UPSC Pack',full:'Full Access'};
+        document.getElementById('cpText').innerHTML=(planNames[userPlan]||userPlan)+'<small>Plan active · Full access</small>';
+    }
+}
+
+// ===== RAZORPAY PAYMENT =====
+function initPayment(planId,amount,planName){
+    if(!token){location.href='login.html';return}
+
+    var btn=event.target;
+    btn.disabled=true;
+    btn.innerHTML='<span class="spinner"></span> Processing...';
+
+    // Create order on server
+    fetch(API,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({
+            action:'createOrder',
+            token:token,
+            planId:planId,
+            amount:amount
+        })
+    })
+    .then(function(r){return r.json()})
+    .then(function(data){
+        btn.disabled=false;
+        btn.textContent='Buy for ₹'+amount;
+
+        if(data.error){
+            showToast(data.error,'err');
+            return;
+        }
+
+        // Open Razorpay checkout
+        var options={
+            key:data.key,
+            amount:amount*100,
+            currency:'INR',
+            name:'NammaExam',
+            description:planName,
+            order_id:data.orderId,
+            handler:function(response){
+                verifyPayment(response,planId,amount,planName);
+            },
+            prefill:{
+                name:user.name||'',
+                email:user.email||''
+            },
+            theme:{
+                color:'#d62828'
+            },
+            modal:{
+                ondismiss:function(){
+                    showToast('Payment cancelled','err');
+                }
+            }
+        };
+        var rzp=new Razorpay(options);
+        rzp.open();
+    })
+    .catch(function(){
+        btn.disabled=false;
+        btn.textContent='Buy for ₹'+amount;
+        showToast('Network error. Try again.','err');
+    });
+}
+
+function verifyPayment(response,planId,amount,planName){
+    showToast('Verifying payment...','ok');
+
+    fetch(API,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({
+            action:'verifyPayment',
+            token:token,
+            planId:planId,
+            razorpay_order_id:response.razorpay_order_id,
+            razorpay_payment_id:response.razorpay_payment_id,
+            razorpay_signature:response.razorpay_signature
+        })
+    })
+    .then(function(r){return r.json()})
+    .then(function(data){
+        if(data.success){
+            // Update local user data
+            user.plan=planId;
+            localStorage.setItem('user',JSON.stringify(user));
+
+            // Show success
+            document.getElementById('successMsg').textContent=
+                planName+' is now active. All your tests are unlocked!';
+            document.getElementById('successModal').classList.add('open');
+        } else {
+            showToast(data.error||'Payment verification failed','err');
+        }
+    })
+    .catch(function(){
+        showToast('Verification failed. Contact WhatsApp support.','err');
+    });
+}
+
+// ===== COUNTDOWN =====
+function upCD(){
+    var n=new Date(),e=new Date(n);e.setHours(23,59,59,999);
+    var d=e-n,h=Math.floor(d/36e5),m=Math.floor((d%36e5)/6e4),s=Math.floor((d%6e4)/1e3);
+    var el=document.getElementById('cdTimer');
+    if(el)el.textContent='67% OFF ends in '+h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+upCD();setInterval(upCD,1000);
+
+// ===== INIT =====
+renderPlans();
+</script>
+</body>
+</html>

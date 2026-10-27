@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam — NammaExam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#ffffff;--bg-alt:#f8f9fc;--bg-card:#ffffff;
+            --text:#1a1a2e;--text-mid:#4a4a6a;--text-light:#8a8aa0;
+            --primary:#d62828;--primary-light:#fef2f2;--primary-hover:#b91c1c;
+            --accent:#1d4ed8;--accent-light:#eff6ff;
+            --green:#16a34a;--green-light:#f0fdf4;
+            --orange:#ea580c;--orange-light:#fff7ed;
+            --border:#e5e7eb;--border-light:#f3f4f6;
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+            --radius:8px;--radius-lg:12px;
+        }
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-alt);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+        a{text-decoration:none;color:inherit}
+
+        /* NAV */
+        .nav{background:var(--bg);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+        .nav-l{display:flex;align-items:center;gap:10px}
+        .back-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-mid);padding:4px;display:flex;align-items:center}
+        .back-btn:hover{color:var(--text)}
+        .nav-brand{font-weight:800;font-size:18px;color:var(--text)}
+        .nav-brand em{font-style:normal;color:var(--primary)}
+        .nav-r{display:flex;align-items:center;gap:8px}
+        .lang-sw{display:flex;background:var(--bg-alt);border-radius:6px;padding:2px;border:1px solid var(--border)}
+        .lang-sw button{border:none;background:transparent;padding:4px 10px;font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;color:var(--text-light);transition:all .15s}
+        .lang-sw button.on{background:var(--primary);color:#fff}
+
+        /* PAGE */
+        .page{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+
+        /* EXAM HEADER */
+        .exam-head{margin-bottom:24px}
+        .exam-head .exam-ic{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px}
+        .exam-head h1{font-size:22px;font-weight:700;margin-bottom:2px}
+        .exam-head p{font-size:13px;color:var(--text-light)}
+
+        /* EXAM TABS */
+        .tabs{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+        .tab{padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text-light);white-space:nowrap;transition:all .15s}
+        .tab:hover{background:var(--bg-alt);color:var(--text-mid)}
+        .tab.on{background:var(--primary);color:#fff}
+
+        /* SECTION LABEL */
+        .sec-lbl{font-size:13px;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:20px}
+        .sec-lbl:first-of-type{margin-top:0}
+
+        /* PAPER CARD */
+        .paper-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+        .p-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;transition:all .15s}
+        .p-card.free{cursor:pointer}
+        .p-card.free:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+        .p-card.free:active{transform:scale(.98)}
+        .p-card.locked{opacity:.7}
+        .p-card.done{border-left:3px solid var(--green)}
+        .p-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+        .p-status{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+        .p-status.s-free{background:var(--green-light);color:var(--green)}
+        .p-status.s-done{background:var(--green-light);color:var(--green)}
+        .p-status.s-lock{background:var(--bg-alt);color:var(--text-light)}
+        .p-info{flex:1;min-width:0}
+        .p-name{font-size:14px;font-weight:600}
+        .p-meta{font-size:11px;color:var(--text-light);margin-top:1px}
+        .p-right{text-align:right;flex-shrink:0}
+        .p-score{font-size:15px;font-weight:700;color:var(--green)}
+        .p-acc{font-size:11px;color:var(--text-light)}
+
+        /* UNLOCK BAR */
+        .unlock-bar{background:var(--bg-card);border:1.5px solid var(--primary);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+        .unlock-info h3{font-size:14px;font-weight:700;margin-bottom:2px}
+        .unlock-info p{font-size:11px;color:var(--text-light)}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+        .btn:active{transform:scale(.97)}
+        .btn-p{background:var(--primary);color:#fff}
+        .btn-p:hover{background:var(--primary-hover)}
+        .btn-s{background:transparent;color:var(--text-mid);border:1.5px solid var(--border)}
+        .btn-s:hover{border-color:var(--text-mid)}
+
+        /* PROGRESS SECTION */
+        .prog-sec{margin-bottom:24px}
+        .prog-item{margin-bottom:10px}
+        .prog-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+        .prog-head span:first-child{font-weight:600}
+        .prog-head span:last-child{color:var(--text-light)}
+        .prog-bar{height:5px;background:var(--border-light);border-radius:3px;overflow:hidden}
+        .prog-fill{height:100%;border-radius:3px}
+
+        /* LOADING */
+        .loading{display:flex;align-items:center;justify-content:center;padding:60px 0;flex-direction:column;gap:12px}
+        .ld-sp{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading p{font-size:13px;color:var(--text-light)}
+
+        /* TOAST */
+        .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:var(--shadow-md);display:none;max-width:360px;text-align:center}
+        .toast.err{background:var(--primary);color:#fff}
+        .toast.ok{background:var(--green);color:#fff}
+        .toast.show{display:block}
+
+        /* POWERED BY */
+        .pwb{text-align:center;padding:16px;font-size:12px;color:var(--text-light)}
+        .pwb a{color:var(--primary);font-weight:700}
+
+        @media(min-width:640px){.page{padding:28px 24px 60px}.exam-head h1{font-size:26px}}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-l">
+        <button class="back-btn" onclick="location.href='dashboard.html'">←</button>
+        <div class="nav-brand" id="navTitle">Namma<em>Exam</em></div>
+    </div>
+    <div class="nav-r">
+        <div class="lang-sw">
+            <button class="on" id="len" onclick="setL('en')">EN</button>
+            <button id="lhi" onclick="setL('hi')">हिं</button>
+        </div>
+    </div>
+</nav>
+
+<!-- LOADING -->
+<div class="loading" id="loadingState">
+    <div class="ld-sp"></div>
+    <p>Loading...</p>
+</div>
+
+<!-- PAGE -->
+<div class="page" id="pageContent" style="display:none">
+
+    <!-- EXAM HEADER -->
+    <div class="exam-head" id="examHead"></div>
+
+    <!-- EXAM TABS -->
+    <div class="tabs" id="examTabs"></div>
+
+    <!-- CONTENT -->
+    <div id="examContent"></div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- POWERED BY -->
+<div class="pwb" id="pwb" style="display:none">
+    Namma Exam — Powered by <a href="https://nammaexam.online/" target="_blank" rel="noopener">Clinisync Technology</a>
+</div>
+
+<script>
+// ===== API =====
+var API='https://script.google.com/macros/s/AKfycbxn_syphrTs7NP4QaVpOznYyds4ekTQlCjXxkX3uakfJHJmPKSiq83DVztoVeWpp8TVyg/exec';
+
+// ===== AUTH =====
+var token=localStorage.getItem('token');
+var user=JSON.parse(localStorage.getItem('user')||'{}');
+if(!token){location.href='login.html'}
+
+// ===== URL PARAMS =====
+var urlParams=new URLSearchParams(window.location.search);
+var bodyParam=urlParams.get('body')||'ssc';
+var examParam=urlParams.get('exam')||'';
+
+// ===== EXAM DATA =====
+var examData={
+    ssc:{
+        icon:'📋',iconBg:'var(--primary-light)',iconColor:'var(--primary)',
+        name:'SSC',fullName:'Staff Selection Commission',
+        exams:[
+            {id:'ssc-cgl',name:'SSC CGL Tier 1',qs:100,time:60,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2020','2021','2022','2023']},
+            {id:'ssc-chsl',name:'SSC CHSL Tier 1',qs:100,time:60,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2020','2021','2022','2023']},
+            {id:'ssc-mts',name:'SSC MTS',qs:100,time:90,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2020','2021','2022']},
+            {id:'ssc-gd',name:'SSC GD Constable',qs:100,time:90,sections:'Reasoning, GA, Quant, English',neg:'0',papers:['2019','2020','2021','2022']},
+            {id:'ssc-cpo',name:'SSC CPO SI',qs:200,time:120,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2020','2021','2022']}
+        ]
+    },
+    rrb:{
+        icon:'🚂',iconBg:'var(--accent-light)',iconColor:'var(--accent)',
+        name:'Railway (RRB)',fullName:'Railway Recruitment Board',
+        exams:[
+            {id:'rrb-ntpc',name:'RRB NTPC CBT 1',qs:100,time:90,sections:'GA, Reasoning, Quant, English',neg:'0.33',papers:['2019','2020','2021']},
+            {id:'rrb-groupd',name:'RRB Group D',qs:100,time:90,sections:'GA, Reasoning, Quant, English',neg:'0.33',papers:['2019','2020','2021']},
+            {id:'rrb-alp',name:'RRB ALP',qs:75,time:60,sections:'GA, Reasoning, Quant, English',neg:'0.33',papers:['2019','2020','2021']},
+            {id:'rrb-je',name:'RRB JE CBT 1',qs:100,time:90,sections:'GA, Reasoning, Quant, English',neg:'0.33',papers:['2019','2020','2021']}
+        ]
+    },
+    bank:{
+        icon:'🏦',iconBg:'var(--green-light)',iconColor:'var(--green)',
+        name:'Banking',fullName:'IBPS / SBI / RBI',
+        exams:[
+            {id:'ibps-po',name:'IBPS PO Prelims',qs:100,time:60,sections:'English, Quant, Reasoning',neg:'0.25',papers:['2019','2020','2021','2022','2023']},
+            {id:'ibps-clerk',name:'IBPS Clerk Prelims',qs:100,time:60,sections:'English, Quant, Reasoning',neg:'0.25',papers:['2019','2020','2021','2022','2023']},
+            {id:'sbi-po',name:'SBI PO Prelims',qs:100,time:60,sections:'English, Quant, Reasoning',neg:'0.25',papers:['2019','2020','2021','2022','2023']},
+            {id:'sbi-clerk',name:'SBI Clerk Prelims',qs:100,time:60,sections:'English, Quant, Reasoning',neg:'0.25',papers:['2019','2020','2021','2022']},
+            {id:'rbi-gradeb',name:'RBI Grade B Phase 1',qs:200,time:120,sections:'GA, English, Quant, Reasoning',neg:'0.25',papers:['2019','2020','2021','2022']},
+            {id:'ibps-rrb-po',name:'IBPS RRB PO',qs:80,time:45,sections:'Reasoning, Quant',neg:'0.25',papers:['2019','2020','2021','2022']}
+        ]
+    },
+    upsc:{
+        icon:'🏛️',iconBg:'var(--orange-light)',iconColor:'var(--orange)',
+        name:'UPSC',fullName:'Union Public Service Commission',
+        exams:[
+            {id:'upsc-cse',name:'UPSC CSE Prelims GS',qs:100,time:120,sections:'GS',neg:'0',papers:['2019','2020','2021','2022','2023']},
+            {id:'upsc-cds',name:'UPSC CDS',qs:120,time:120,sections:'English, GK, Mathematics',neg:'0',papers:['2019','2020','2021','2022']},
+            {id:'upsc-nda',name:'UPSC NDA',qs:150,time:150,sections:'Math, GAT',neg:'0',papers:['2019','2020','2021','2022']},
+            {id:'upsc-capf',name:'UPSC CAPF AC',qs:200,time:120,sections:'GA, English, Quant, Reasoning',neg:'0',papers:['2019','2020','2021','2022']}
+        ]
+    },
+    defence:{
+        icon:'🛡️',iconBg:'var(--accent-light)',iconColor:'var(--accent)',
+        name:'Defence',fullName:'AFCAT / INET',
+        exams:[
+            {id:'afcat',name:'AFCAT',qs:100,time:120,sections:'GA, English, Quant, Reasoning, Military',neg:'0',papers:['2019','2020','2021','2022','2023']},
+            {id:'inet',name:'INET',qs:100,time:120,sections:'GA, English, Quant, Reasoning',neg:'0',papers:['2019','2020','2021']}
+        ]
+    },
+    other:{
+        icon:'📜',iconBg:'var(--bg-alt)',iconColor:'var(--text-mid)',
+        name:'Others',fullName:'FCI / ESIC / EPFO / NABARD / SEBI',
+        exams:[
+            {id:'fci',name:'FCI Manager',qs:100,time:60,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2021']},
+            {id:'esic',name:'ESIC UDC',qs:100,time:60,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2021']},
+            {id:'epfo',name:'EPFO SSA',qs:100,time:60,sections:'Reasoning, GA, Quant, English',neg:'0.25',papers:['2019','2021']},
+            {id:'nabard-a',name:'NABARD Grade A',qs:200,time:120,sections:'GA, English, Quant, Reasoning',neg:'0.25',papers:['2019','2021']},
+            {id:'sebi-a',name:'SEBI Grade A',qs:200,time:120,sections:'GA, English, Quant, Reasoning',neg:'0.25',papers:['2019','2021']}
+        ]
+    }
+};
+
+// ===== LANGUAGE =====
+var TL={en:{pyq:"Previous Year Papers",sec:"Sectional Tests",mock:"Mock Tests",free:"Free",done:"Completed",locked:"Locked",start:"Start",review:"Review",qs:"Qs",min:"min",neg:"Negative",no_neg:"No negative",unlock_title:"Unlock This Exam",unlock_desc:"Get all papers, sectional & mock tests",unlock_btn:"Unlock — ₹49",all_unlock:"Unlock All Exams — ₹199",attempt:"Attempt",no_papers:"Papers coming soon",no_sectionals:"Sectional tests coming soon",no_mocks:"Mock tests coming soon"},hi:{pyq:"पिछले वर्ष के पेपर",sec:"खंडवार टेस्ट",mock:"मॉक टेस्ट",free:"मुफ्त",done:"पूर्ण",locked:"लॉक",start:"शुरू करें",review:"समीक्षा",qs:"प्र",min:"मि",neg:"नेगेटिव",no_neg:"नेगेटिव नहीं",unlock_title:"इस परीक्षा को अनलॉक करें",unlock_desc:"सभी पेपर, खंडवार और मॉक टेस्ट पाएं",unlock_btn:"अनलॉक — ₹49",all_unlock:"सभी परीक्षाएं अनलॉक — ₹199",attempt:"प्रयास",no_papers:"पेपर जल्द आ रहे हैं",no_sectionals:"खंडवार टेस्ट जल्द आ रहे हैं",no_mocks:"मॉक टेस्ट जल्द आ रहे हैं"}};
+function getL(){return localStorage.getItem('nl')||'en'}
+function setL(l){localStorage.setItem('nl',l);applyL(l);document.getElementById('len').classList.toggle('on',l==='en');document.getElementById('lhi').classList.toggle('on',l==='hi')}
+function applyL(l){/* re-render on lang change */renderPage()}
+applyL(getL());document.getElementById('len').classList.toggle('on',getL()==='en');document.getElementById('lhi').classList.toggle('on',getL()==='hi');
+
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(function(){t.classList.remove('show')},3000)}
+
+// ===== STATE =====
+var currentExam=examParam||'';
+var userResults=[];
+
+// ===== FETCH RESULTS =====
+function fetchResults(){
+    fetch(API+'?action=getDashboard&token='+encodeURIComponent(token))
+    .then(function(r){return r.json()})
+    .then(function(data){
+        userResults=data.recentResults||[];
+        renderPage();
+    })
+    .catch(function(){
+        var cached=JSON.parse(localStorage.getItem('dash_cache')||'null');
+        if(cached)userResults=cached.recentResults||[];
+        renderPage();
+    });
+}
+
+// ===== CHECK ACCESS =====
+function hasAccess(examId){
+    var plan=user.plan||'free';
+    if(plan==='full'||plan==='full-access')return true;
+    if(plan==='ssc-pack'&&examId.startsWith('ssc-'))return true;
+    if(plan==='bank-pack'&&(examId.startsWith('ibps-')||examId.startsWith('sbi-')||examId.startsWith('rbi-')))return true;
+    if(plan==='rrb-pack'&&examId.startsWith('rrb-'))return true;
+    if(plan==='upsc-pack'&&examId.startsWith('upsc-'))return true;
+    if(plan==='single'&&(user.unlockedExams||[]).indexOf(examId)!==-1)return true;
+    return false;
+}
+
+function isFreePaper(exam,year){
+    return year===exam.papers[exam.papers.length-1];
+}
+
+function getResult(examId,paperType,year){
+    for(var i=0;i<userResults.length;i++){
+        var r=userResults[i];
+        if(r.examId===examId&&r.paperId===examId+'-'+paperType+'-'+year)return r;
+    }
+    return null;
+}
+
+// ===== RENDER =====
+function renderPage(){
+    var lang=getL(),t=TL[lang]||TL.en;
+    var body=examData[bodyParam];
+    if(!body){location.href='dashboard.html';return}
+
+    document.getElementById('loadingState').style.display='none';
+    document.getElementById('pageContent').style.display='block';
+    document.getElementById('pwb').style.display='block';
+
+    // Header
+    document.getElementById('examHead').innerHTML=
+        '<div class="exam-ic" style="background:'+body.iconBg+';color:'+body.iconColor+'">'+body.icon+'</div>'+
+        '<h1>'+body.name+'</h1>'+
+        '<p>'+body.fullName+'</p>';
+
+    // Tabs
+    var tabsHtml='';
+    body.exams.forEach(function(ex){
+        var cls=ex.id===currentExam?'tab on':'tab';
+        tabsHtml+='<button class="'+cls+'" onclick="selectExam(\''+ex.id+'\')">'+ex.name.replace(body.name+' ','').replace('Tier 1 ','')+'</button>';
+    });
+    document.getElementById('examTabs').innerHTML=tabsHtml;
+
+    // Default to first exam
+    if(!currentExam&&body.exams.length>0){currentExam=body.exams[0].id;selectExam(currentExam);return}
+
+    // Find current exam
+    var exam=null;
+    body.exams.forEach(function(ex){if(ex.id===currentExam)exam=ex});
+    if(!exam){currentExam=body.exams[0].id;exam=body.exams[0]}
+
+    var access=hasAccess(exam.id);
+    var content='';
+
+    // UNLOCK BAR (if no access)
+    if(!access){
+        content+=
+            '<div class="unlock-bar">'+
+                '<div class="unlock-info">'+
+                    '<h3>'+t.unlock_title+'</h3>'+
+                    '<p>'+t.unlock_desc+'</p>'+
+                '</div>'+
+                '<button class="btn btn-p" onclick="location.href=\'plans.html\'">'+t.unlock_btn+'</button>'+
+            '</div>';
+    }
+
+    // PYQ PAPERS
+    content+='<div class="sec-lbl">'+t.pyq+'</div>';
+    content+='<div class="paper-list">';
+    exam.papers.forEach(function(year){
+        var paperId=exam.id+'-pyq-'+year;
+        var free=isFreePaper(exam,year);
+        var canAccess=access||free;
+        var result=getResult(exam.id,'pyq',year);
+        var isDone=!!result;
+
+        var statusCls,statusIcon;
+        if(isDone){statusCls='s-done';statusIcon='✓'}
+        else if(canAccess){statusCls='s-free';statusIcon='▶'}
+        else{statusCls='s-lock';statusIcon='🔒'}
+
+        var cardCls='p-card';
+        if(isDone)cardCls+=' done';
+        else if(!canAccess)cardCls+=' locked';
+        else cardCls+=' free';
+
+        var onclickStr='';
+        if(canAccess&&!isDone)onclickStr=' onclick="startTest(\''+exam.id+'\',\'pyq\',\''+year+'\')"';
+        else if(isDone)onclickStr=' onclick="location.href=\'result.html?id='+result.resultId+'\'"';
+
+        var metaParts=[];
+        metaParts.push(exam.qs+' '+t.qs);
+        metaParts.push(exam.time+' '+t.min);
+        if(exam.neg!=='0')metaParts.push(t.neg+': '+exam.neg);
+        else metaParts.push(t.no_neg);
+        if(free)metaParts.push(t.free);
+
+        content+=
+            '<div class="'+cardCls+'"'+onclickStr+'>'+
+                '<div class="p-left">'+
+                    '<div class="p-status '+statusCls+'">'+statusIcon+'</div>'+
+                    '<div class="p-info">'+
+                        '<div class="p-name">'+(lang==='hi'?'पेपर ':'Paper ')+year+'</div>'+
+                        '<div class="p-meta">'+metaParts.join(' · ')+'</div>'+
+                    '</div>'+
+                '</div>'+
+                '<div class="p-right">';
+        if(isDone){
+            content+='<div class="p-score">'+result.score+'/'+result.total+'</div>';
+            content+='<div class="p-acc">'+result.accuracy+'% · '+t.review+'</div>';
+        } else if(canAccess){
+            content+='<button class="btn btn-p" style="padding:6px 14px;font-size:12px">'+t.start+'</button>';
+        } else {
+            content+='<span style="font-size:12px;color:var(--text-light)">🔒 '+t.locked+'</span>';
+        }
+        content+='</div></div>';
+    });
+    content+='</div>';
+
+    // SECTIONAL TESTS
+    var sections=exam.sections.split(',').map(function(s){return s.trim()});
+    content+='<div class="sec-lbl">'+t.sec+'</div>';
+    content+='<div class="paper-list">';
+    if(access){
+        sections.forEach(function(sec,i){
+            var paperId=exam.id+'-sec-'+sec.toLowerCase().replace(/\s/g,'');
+            var result=getResult(exam.id,'sectional',sec);
+            var isDone=!!result;
+            var cardCls=isDone?'p-card done free':'p-card free';
+
+            var onclickStr='';
+            if(!isDone)onclickStr=' onclick="startTest(\''+exam.id+'\',\'sectional\',\''+sec+'\')"';
+            else onclickStr=' onclick="location.href=\'result.html?id='+result.resultId+'\'"';
+
+            var statusCls=isDone?'s-done':'s-free';
+            var statusIcon=isDone?'✓':'▶';
+
+            content+=
+                '<div class="'+cardCls+'"'+onclickStr+'>'+
+                    '<div class="p-left">'+
+                        '<div class="p-status '+statusCls+'">'+statusIcon+'</div>'+
+                        '<div class="p-info">'+
+                            '<div class="p-name">'+sec+'</div>'+
+                            '<div class="p-meta">25 '+t.qs+' · 25 '+t.min+'</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="p-right">';
+            if(isDone){
+                content+='<div class="p-score">'+result.score+'/25</div>';
+            } else {
+                content+='<button class="btn btn-p" style="padding:6px 14px;font-size:12px">'+t.start+'</button>';
+            }
+            content+='</div></div>';
+        });
+    } else {
+        content+='<div class="p-card locked"><div class="p-left"><div class="p-status s-lock">🔒</div><div class="p-info"><div class="p-name">'+t.locked+'</div><div class="p-meta">'+t.unlock_desc+'</div></div></div></div>';
+    }
+    content+='</div>';
+
+    // MOCK TESTS
+    content+='<div class="sec-lbl">'+t.mock+'</div>';
+    content+='<div class="paper-list">';
+    if(access){
+        for(var m=1;m<=2;m++){
+            var mockId=exam.id+'-mock-'+m;
+            var result=getResult(exam.id,'mock',String(m));
+            var isDone=!!result;
+            var cardCls=isDone?'p-card done free':'p-card free';
+
+            var onclickStr='';
+            if(!isDone)onclickStr=' onclick="startTest(\''+exam.id+'\',\'mock\',\''+m+'\')"';
+            else onclickStr=' onclick="location.href=\'result.html?id='+result.resultId+'\'"';
+
+            var statusCls=isDone?'s-done':'s-free';
+            var statusIcon=isDone?'✓':'▶';
+
+            content+=
+                '<div class="'+cardCls+'"'+onclickStr+'>'+
+                    '<div class="p-left">'+
+                        '<div class="p-status '+statusCls+'">'+statusIcon+'</div>'+
+                        '<div class="p-info">'+
+                            '<div class="p-name">'+(lang==='hi'?'मॉक टेस्ट ':'Mock Test ')+m+'</div>'+
+                            '<div class="p-meta">'+exam.qs+' '+t.qs+' · '+exam.time+' '+t.min+'</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="p-right">';
+            if(isDone){
+                content+='<div class="p-score">'+result.score+'/'+result.total+'</div>';
+            } else {
+                content+='<button class="btn btn-p" style="padding:6px 14px;font-size:12px">'+t.start+'</button>';
+            }
+            content+='</div></div>';
+        }
+    } else {
+        content+='<div class="p-card locked"><div class="p-left"><div class="p-status s-lock">🔒</div><div class="p-info"><div class="p-name">'+t.locked+'</div><div class="p-meta">'+t.unlock_desc+'</div></div></div></div>';
+    }
+    content+='</div>';
+
+    document.getElementById('examContent').innerHTML=content;
+}
+
+function selectExam(id){
+    currentExam=id;
+    var url=new URL(window.location);
+    url.searchParams.set('exam',id);
+    history.replaceState(null,'',url);
+    renderPage();
+}
+
+function startTest(examId,type,ref){
+    var url='test.html?exam='+examId+'&type='+type+'&ref='+ref;
+    location.href=url;
+}
+
+// ===== INIT =====
+fetchResults();
+</script>
+</body>
+</html>
